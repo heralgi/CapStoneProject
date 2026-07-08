@@ -1,0 +1,77 @@
+﻿using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InsurancePolicyApi.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ClaimsController : ControllerBase
+    {
+        private readonly IClaimService _service;
+
+        public ClaimsController(IClaimService service)
+        {
+            _service = service;
+        }
+
+        // GET: api/claims
+        [HttpGet]
+        public async Task<IActionResult> GetClaims()
+        {
+            return Ok(await _service.GetClaimsAsync());
+        }
+
+        // GET: api/claims/policy/5
+        [HttpGet("policy/{policyId:int}")]
+        public async Task<IActionResult> GetByPolicy(int policyId)
+        {
+            return Ok(await _service.GetByPolicyAsync(policyId));
+        }
+
+        // POST: api/claims/raise
+        [HttpPost("raise")]
+        public async Task<IActionResult> RaiseClaim(Claim claim)
+        {
+            var result = await _service.RaiseClaimAsync(claim);
+
+            return Ok(result);
+        }
+
+        // PUT: api/claims/review/5
+        [HttpPut("review/{claimId:int}")]
+        public async Task<IActionResult> ReviewClaim(int claimId)
+        {
+            var result = await _service.ReviewClaimAsync(claimId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        // PUT: api/claims/approve/5
+        [HttpPut("approve/{claimId:int}")]
+        public async Task<IActionResult> ApproveClaim(int claimId)
+        {
+            var result = await _service.ApproveClaimAsync(claimId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        // PUT: api/claims/reject/5
+        [HttpPut("reject/{claimId:int}")]
+        public async Task<IActionResult> RejectClaim(int claimId)
+        {
+            var result = await _service.RejectClaimAsync(claimId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+    }
+}

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insurance Policy & Claim Management System — Implementation Plan</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65; max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    code { background: #161b22 !important; }
+    pre { background: #161b22 !important; border-color: #30363d !important; }
+    h1,h2 { border-color: #30363d !important; }
+    a { color: #58a6ff; }
+    hr { border-color: #30363d; }
+    .tag { background: #1f6feb33; color: #79c0ff; }
+  }
+  h1 { font-size: 1.9rem; border-bottom: 2px solid #d0d7de; padding-bottom: .4rem; }
+  h2 { font-size: 1.4rem; margin-top: 2.2rem; border-bottom: 1px solid #d0d7de; padding-bottom: .3rem; }
+  h3 { font-size: 1.12rem; margin-top: 1.6rem; }
+  code { background: #f0f1f2; padding: .15em .4em; border-radius: 5px; font-size: .88em;
+         font-family: "Cascadia Code", "Consolas", monospace; }
+  pre { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px; padding: 1rem;
+        overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+  ul { padding-left: 1.4rem; }
+  li { margin: .25rem 0; }
+  hr { border: none; border-top: 1px solid #d0d7de; margin: 2rem 0; }
+  strong { font-weight: 650; }
+  .tag { display: inline-block; background: #ddf4ff; color: #0969da; border-radius: 999px;
+         padding: .05rem .55rem; font-size: .78rem; font-weight: 600; margin-left: .4rem; vertical-align: middle; }
+  .lead { color: #656d76; }
+  ol { padding-left: 1.5rem; }
+  ol ul { margin-top: .3rem; }
+</style>
+</head>
+<body>
+
+<h1>Insurance Policy &amp; Claim Management System — Implementation Plan <span class="tag">ASP.NET Core 10</span></h1>
+
+<h2>Context</h2>
+<p>The repo at <code>C:\Tools\CapStoneProject</code> currently holds only the default ASP.NET Core 10 Web API scaffold (<code>WeatherForecast</code> template). The Capstone SRS (<code>Capstone Project.pdf</code>) specifies a full <strong>Insurance Policy and Claim Management System</strong>: a layered REST API with JWT auth, 3 roles (Admin/Agent/Customer), 9 domain entities, a policy lifecycle, a claim lifecycle, simulated payments, soft-delete, centralized exceptions, structured logging, Swagger, and pagination/sorting/filtering on every list API.</p>
+<p>The SRS names Spring Boot, but the user chose to build in <strong>ASP.NET Core 10</strong> (mapping Spring concepts to ASP.NET equivalents). This plan delivers the system in the user's requested build order: <strong>entities → DTOs → repositories → services → controllers → auth</strong>, plus the mandatory cross-cutting concerns.</p>
+
+<h3>Tech decisions (confirmed)</h3>
+<ul>
+  <li><strong>Persistence:</strong> EF Core + SQL Server <strong>LocalDB</strong>, code-first migrations.</li>
+  <li><strong>API docs:</strong> <strong>Swashbuckle</strong> Swagger UI at <code>/swagger</code> with JWT bearer "Authorize" button.</li>
+  <li><strong>Mapping:</strong> <strong>AutoMapper</strong> profiles.</li>
+  <li><strong>Validation:</strong> <strong>DataAnnotations</strong> on DTOs + automatic <code>ModelState</code> validation.</li>
+  <li><strong>Password hashing:</strong> ASP.NET Core <code>PasswordHasher&lt;T&gt;</code> (no extra dependency).</li>
+</ul>
+
+<h2>Target project structure</h2>
+<p class="lead">All paths relative to <code>Backend/InsurancePolicyApi/InsurancePolicyApi/</code>.</p>
+<pre><code>Entities/            domain entities + enums
+DTOs/                request/response DTOs grouped by module
+  Common/            ApiResponse, ErrorResponse, PagedResponse, PageQuery
+Data/                AppDbContext, DbInitializer (seed admin)
+Repositories/        IGenericRepository + per-entity interfaces &amp; impls
+Services/            interfaces + implementations (business logic)
+Controllers/         REST controllers per module
+Mapping/             AutoMapper profiles
+Exceptions/          custom exceptions + GlobalExceptionMiddleware
+Security/            JWT token service, current-user accessor
+Migrations/          EF Core migrations (generated)
+Program.cs           DI wiring, auth, swagger, middleware
+appsettings.json     connection string + JWT settings</code></pre>
+<p>Delete <code>WeatherForecast.cs</code> and <code>Controllers/WeatherForecastController.cs</code>.</p>
+
+<h2>Packages to add</h2>
+<ul>
+  <li><code>Microsoft.EntityFrameworkCore.SqlServer</code></li>
+  <li><code>Microsoft.EntityFrameworkCore.Tools</code> (+ <code>dotnet-ef</code> for migrations)</li>
+  <li><code>Microsoft.AspNetCore.Authentication.JwtBearer</code></li>
+  <li><code>System.IdentityModel.Tokens.Jwt</code></li>
+  <li><code>AutoMapper</code> (with DI extension)</li>
+  <li><code>Swashbuckle.AspNetCore</code></li>
+</ul>
+<p class="lead">(<code>Microsoft.AspNetCore.OpenApi</code> may stay or be removed; Swashbuckle becomes the doc source.)</p>
+
+<hr>
+
+<h2>Step 1 — Entities (9 + enums)</h2>
+<p>Create under <code>Entities/</code>. Use <code>int</code> PKs, <code>DateTime</code> audit fields, navigation properties matching the SRS Entity Relationship Mapping (§10). Soft-delete via <code>IsActive</code>/status fields (DRD rules — never hard delete).</p>
+<ul>
+  <li><strong>User</strong> — Id, FullName, Email (unique), PasswordHash, MobileNumber, Role (enum), IsActive, CreatedDate, UpdatedDate. 1:1 Customer.</li>
+  <li><strong>Customer</strong> — Id, UserId (FK, unique), DateOfBirth, Address, City, State, PinCode, NomineeName, NomineeRelation, audit. (§9.2)</li>
+  <li><strong>InsuranceProduct</strong> — Id, ProductName (unique), ProductType (enum), Description, IsActive, audit. 1:M Plans. (§9.3)</li>
+  <li><strong>PolicyPlan</strong> — Id, InsuranceProductId (FK), PlanName, CoverageAmount, PremiumAmount, PremiumType (enum), DurationYears, TermsAndConditions, IsActive, audit. (§9.4)</li>
+  <li><strong>Policy</strong> — Id, PolicyNumber (unique), CustomerId (FK), PolicyPlanId (FK), StartDate, EndDate, PolicyStatus (enum), TotalPremiumPaid, audit. (§9.5)</li>
+  <li><strong>PremiumPayment</strong> — Id, PolicyId (FK), Amount, PaymentDate, PaymentMode (enum), TransactionReference (unique), PaymentStatus (enum), CreatedDate. (§9.6)</li>
+  <li><strong>Claim</strong> — Id, ClaimNumber (unique), PolicyId (FK), ClaimAmount, ClaimReason, IncidentDate, ClaimStatus (enum), AgentRemarks, AdminRemarks, audit. (§9.7)</li>
+  <li><strong>ClaimDocument</strong> — Id, ClaimId (FK), DocumentName, DocumentType, DocumentReference (filename/URL/text), UploadedDate. (§9.8)</li>
+  <li><strong>ClaimStatusHistory</strong> — Id, ClaimId (FK), PreviousStatus, NewStatus, Remarks, UpdatedByUserId (FK), UpdatedDate. Append-only. (§9.9)</li>
+</ul>
+<p><strong>Enums</strong> (<code>Entities/Enums/</code>): <code>UserRole {Admin,Agent,Customer}</code>, <code>ProductType {Health,Motor,Life,Travel}</code>, <code>PremiumType {OneTime,Annual}</code>, <code>PolicyStatus {PendingPayment,Active,Expired,Cancelled}</code>, <code>PaymentMode {UPI,Card,NetBanking,Cash}</code>, <code>PaymentStatus {Success,Failed,Pending}</code>, <code>ClaimStatus {Submitted,UnderReview,RecommendedForApproval,RecommendedForRejection,Approved,Rejected}</code>.</p>
+
+<h2>Step 2 — DTOs (per §11)</h2>
+<p>Create under <code>DTOs/&lt;Module&gt;/</code> with DataAnnotations validation (§17). DTOs <strong>must never expose entities or passwords</strong> (DTO-RUL-005). Key sets:</p>
+<ul>
+  <li><strong>Common/</strong>: <code>ApiResponse&lt;T&gt;</code> (success, message, data, timestamp), <code>ErrorResponse</code> (timestamp, statusCode, errorType, message, path), <code>PagedResponse&lt;T&gt;</code> (records, currentPage, pageSize, totalRecords, totalPages, isLastPage, sortField, sortDirection), <code>PageQuery</code> (pageNumber, pageSize, sortBy, sortDir + module filter fields).</li>
+  <li><strong>Auth</strong>: <code>RegisterRequest</code> (no role field — customers only), <code>LoginRequest</code>, <code>LoginResponse</code> (token, tokenType, email, role, expiry).</li>
+  <li><strong>User</strong>: <code>UserResponse</code>, <code>CreateAgentRequest</code>, <code>UserStatusUpdateRequest</code>.</li>
+  <li><strong>Customer</strong>: <code>CustomerRequest</code>, <code>CustomerResponse</code>.</li>
+  <li><strong>Product</strong>: <code>ProductRequest</code>, <code>ProductResponse</code>.</li>
+  <li><strong>Plan</strong>: <code>PlanRequest</code>, <code>PlanResponse</code>.</li>
+  <li><strong>Policy</strong>: <code>CustomerPolicyPurchaseRequest</code> (plan + start date; customer derived from token), <code>AgentPolicyIssueRequest</code> (+customer ref), <code>PolicyResponse</code>.</li>
+  <li><strong>Payment</strong>: <code>PaymentRequest</code>, <code>PaymentResponse</code>.</li>
+  <li><strong>Claim</strong>: <code>ClaimRequest</code>, <code>ClaimReviewRequest</code> (agent), <code>ClaimFinalDecisionRequest</code> (admin), <code>ClaimResponse</code>.</li>
+  <li><strong>ClaimHistory</strong>: <code>ClaimStatusHistoryResponse</code>.</li>
+</ul>
+<p>Validation specifics from §17: email valid/unique, DOB past date, coverage/premium/amount/duration &gt; 0, incident date not future, claim amount ≤ coverage, at least one supporting document.</p>
+
+<h2>Step 3 — Data layer + Repositories</h2>
+<ul>
+  <li><strong><code>Data/AppDbContext</code></strong>: <code>DbSet</code> per entity; Fluent API for unique indexes (Email, ProductName, PolicyNumber, ClaimNumber, TransactionReference), relationships (§10 MAP-001..009), <code>Restrict</code>/<code>NoAction</code> delete behavior to enforce no-hard-delete intent.</li>
+  <li><strong><code>Data/DbInitializer</code></strong>: seed one Admin user (ASM-004 — admin/agent created internally), since public registration is customer-only.</li>
+  <li><strong>Repositories</strong> (<code>Repositories/</code>): <code>IGenericRepository&lt;T&gt;</code> (Add/Update/GetById/Query/SaveChanges) + a paged/filtered/sorted query helper (REP-RUL-006). Per-entity interfaces for business-identifier lookups (REP-RUL-007): <code>GetByPolicyNumber</code>, <code>GetByClaimNumber</code>, <code>GetByTransactionReference</code>, <code>ExistsByEmail</code>, etc. <strong>No business logic here</strong> (REP-RUL-001).</li>
+  <li>First EF migration + <code>database update</code> against LocalDB.</li>
+</ul>
+
+<h2>Step 4 — Services (business logic + rules)</h2>
+<p>Interfaces + impls under <code>Services/</code>. Each enforces its module's business rules (SRV-RUL-001..011), maps via AutoMapper, throws custom exceptions, logs business events, and returns DTOs. Services:</p>
+<ul>
+  <li><strong>AuthService</strong> — register (force Customer role), login (reject inactive — USR-BR-005), hash/verify password, issue JWT.</li>
+  <li><strong>UserService</strong> — list (paged/filtered by role+active), create agent, activate/deactivate.</li>
+  <li><strong>CustomerService</strong> — create/update/view own profile; enforce one-profile-per-user (CUS-BR-002) and owner-only update (CUS-BR-004 / SRV-RUL-010).</li>
+  <li><strong>ProductService</strong> — CRUD + deactivate; unique name; only-active-usable (PRD rules).</li>
+  <li><strong>PlanService</strong> — CRUD + deactivate; validations PLN-BR-002..004; only under active product.</li>
+  <li><strong>PolicyService</strong> — purchase (customer-from-token) / issue (agent/admin); generate unique PolicyNumber; create as <code>PendingPayment</code> (POL-BR-004); compute EndDate from start + plan duration; cancel; expiry check by date (POL-BR-006).</li>
+  <li><strong>PaymentService</strong> — record simulated payment; unique transaction ref; on first <code>Success</code> ≥ required premium → activate policy + increase TotalPremiumPaid (PAY-BR-004/007, PMT rules); failed/pending never activate.</li>
+  <li><strong>ClaimService</strong> — raise (only own <strong>Active</strong> policy; amount ≤ coverage; incident not future; ≥1 doc — CLM rules); agent review/recommend; admin final approve/reject; block modification of Approved/Rejected (CLM-BR-009); enforce claim lifecycle transitions (CLC-RUL-001..008).</li>
+  <li><strong>ClaimStatusHistoryService</strong> — append a history row on every claim status change (CLC-RUL-007, HIS rules); paged read for admin/agent (own-only for customer).</li>
+</ul>
+<p>Pagination/sorting/filtering validated centrally (PAG/SRT rules): default page 1, size 10, max 100, default sort CreatedDate desc; reject invalid page/size/sort field.</p>
+
+<h2>Step 5 — Controllers (REST APIs)</h2>
+<p>Thin controllers per module under <code>Controllers/</code> (CON-RUL-006: no business logic). Attribute routing <code>[Route("api/[controller]")]</code>, <code>[Authorize(Roles=...)]</code> per the §13 access matrix, <code>[ProducesResponseType]</code> for Swagger, return <code>ApiResponse&lt;T&gt;</code> with correct status codes (§18.3). Controllers + capabilities (§22):</p>
+<ul>
+  <li><code>AuthController</code> — register, login (anonymous).</li>
+  <li><code>UsersController</code> — Admin: list/create-agent/activate/deactivate.</li>
+  <li><code>CustomersController</code> — customer profile CRUD-own; admin/agent view/list.</li>
+  <li><code>ProductsController</code>, <code>PlansController</code> — Admin manage; all roles view active.</li>
+  <li><code>PoliciesController</code> — purchase (Customer), issue/cancel/list (Admin/Agent), view own (Customer).</li>
+  <li><code>PaymentsController</code> — record (Customer own / Agent), list &amp; view.</li>
+  <li><code>ClaimsController</code> — raise (Customer), review+recommend (Agent), final decision (Admin), list/view.</li>
+  <li><code>ClaimHistoryController</code> — view status history (own-only for Customer).</li>
+</ul>
+
+<h2>Step 6 — Auth + cross-cutting (wired in Program.cs)</h2>
+<ul>
+  <li><strong>JWT</strong> (<code>Security/</code>): <code>JwtTokenService</code> builds tokens with identity, email, role, iat, exp (§23.3 — never include password/sensitive data). <code>appsettings.json</code> <code>Jwt</code> section (Issuer, Audience, Key, ExpiryMinutes). Configure <code>AddAuthentication().AddJwtBearer(...)</code> + <code>AddAuthorization</code>. Reject missing/invalid/expired (SEC-AUTH-004).</li>
+  <li><strong>Current user</strong> accessor to derive customer identity from token (ambiguity checklist — customer never passes own ID).</li>
+  <li><strong>GlobalExceptionMiddleware</strong> (<code>Exceptions/</code>): map custom exceptions (NotFound→404, Duplicate→409, Validation→400, Unauthorized→401, Forbidden→403, BusinessRule→400/409, fallback→500) to the standard <code>ErrorResponse</code> (§18). Covers EXC-001..019.</li>
+  <li><strong>Logging</strong>: built-in <code>ILogger</code> structured logs for LOG-001..017; never log passwords/JWTs (LOG-RUL-001/002).</li>
+  <li><strong>Swagger</strong>: <code>AddSwaggerGen</code> with API title/description/version, JWT bearer security definition + "Authorize" button, XML comments, role notes (SWG-001..011); expose in Development.</li>
+  <li><strong>AutoMapper</strong>: register mapping profiles from <code>Mapping/</code>.</li>
+  <li><strong>Program.cs</strong> middleware order: HTTPS → Swagger (dev) → exception middleware → Authentication → Authorization → MapControllers. Call <code>DbInitializer</code> seed on startup.</li>
+</ul>
+
+<hr>
+
+<h2>Critical files</h2>
+<ul>
+  <li><code>Backend/InsurancePolicyApi/InsurancePolicyApi/Program.cs</code> — rewrite DI/middleware/auth/swagger.</li>
+  <li><code>Backend/InsurancePolicyApi/InsurancePolicyApi/InsurancePolicyApi.csproj</code> — add packages.</li>
+  <li><code>Backend/InsurancePolicyApi/InsurancePolicyApi/appsettings.json</code> — connection string + JWT settings.</li>
+  <li>New folders: <code>Entities/</code>, <code>DTOs/</code>, <code>Data/</code>, <code>Repositories/</code>, <code>Services/</code>, <code>Controllers/</code>, <code>Mapping/</code>, <code>Exceptions/</code>, <code>Security/</code>.</li>
+  <li>Remove: <code>WeatherForecast.cs</code>, <code>Controllers/WeatherForecastController.cs</code>.</li>
+</ul>
+
+<h2>Verification</h2>
+<ol>
+  <li><code>dotnet restore</code> then <code>dotnet build</code> from <code>Backend/InsurancePolicyApi/</code> — clean build.</li>
+  <li><code>dotnet ef migrations add InitialCreate</code> + <code>dotnet ef database update</code> — schema created in LocalDB.</li>
+  <li><code>dotnet run --project InsurancePolicyApi</code> → open <code>https://localhost:7083/swagger</code>.</li>
+  <li>End-to-end happy path via Swagger:
+    <ul>
+      <li>Register customer → login → copy JWT → click <strong>Authorize</strong>.</li>
+      <li>As seeded Admin: create product → create plan.</li>
+      <li>As Customer: create profile → purchase policy (status <code>PendingPayment</code>) → record <code>Success</code> payment ≥ premium → policy flips to <code>Active</code>.</li>
+      <li>Raise claim on active policy → as Agent recommend → as Admin approve → confirm claim status history recorded and approved claim is immutable.</li>
+    </ul>
+  </li>
+  <li>Negative checks: register-as-admin rejected; customer accessing another customer's data → 403/structured error; claim amount &gt; coverage → 400; failed payment does not activate; list APIs return paginated metadata and reject invalid page/sort inputs.</li>
+  <li>Confirm acceptance criteria AC-001..AC-030 (§30) are observable through the above.</li>
+</ol>
+
+<h2>Notes / scope</h2>
+<p>This is a large multi-module build (~60–80 files). Suggested execution follows the requested order (entities → DTOs → repositories → services → controllers → auth), building cross-cutting (exceptions/logging/swagger) alongside auth. Out-of-scope per SRS: real payment gateway, KYC, notifications, cloud storage, microservices, Docker, renewals, refunds (OOS-001..012).</p>
+
+</body>
+</html>

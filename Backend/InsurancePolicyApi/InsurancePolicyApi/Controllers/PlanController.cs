@@ -1,0 +1,66 @@
+﻿using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InsurancePolicyApi.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PolicyPlansController : ControllerBase
+    {
+        private readonly IPlanService _service;
+
+        public PolicyPlansController(IPlanService service)
+        {
+            _service = service;
+        }
+
+        // GET: api/policyplans/product/1
+        [HttpGet("product/{productId:int}")]
+        public async Task<IActionResult> GetByProductId(int productId)
+        {
+            var plans = await _service.GetByProductIdAsync(productId);
+
+            return Ok(plans);
+        }
+
+        // POST: api/policyplans
+        [HttpPost]
+        public async Task<IActionResult> Add(PolicyPlan plan)
+        {
+            var created = await _service.AddAsync(plan);
+
+            return CreatedAtAction(
+                nameof(GetByProductId),
+                new { productId = created.InsuranceProductId },
+                created);
+        }
+
+        // PUT: api/policyplans/5
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, PolicyPlan plan)
+        {
+            var updated = await _service.UpdateAsync(id, plan);
+
+            if (updated == null)
+                return NotFound();
+
+            return Ok(updated);
+        }
+
+        // PUT: api/policyplans/deactivate/5
+        [HttpPut("deactivate/{id:int}")]
+        public async Task<IActionResult> Deactivate(int id)
+        {
+            var result = await _service.DeactivateAsync(id);
+
+            if (!result)
+                return NotFound();
+
+            return Ok(new
+            {
+                Message = "Policy plan deactivated successfully."
+            });
+        }
+    }
+}
