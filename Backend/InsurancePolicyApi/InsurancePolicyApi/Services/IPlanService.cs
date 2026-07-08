@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Plan;
+using InsurancePolicyApi.Entities;
 
 namespace InsurancePolicyApi.Services
 {
@@ -6,7 +7,7 @@ namespace InsurancePolicyApi.Services
     {
         Task<IEnumerable<PolicyPlan>> GetByProductIdAsync(int productId);
 
-        Task<PolicyPlan> AddAsync(PolicyPlan plan);
+        Task<PolicyPlan> AddAsync(PlanRequest plan);
 
         Task<PolicyPlan?> UpdateAsync(int id, PolicyPlan plan);
 

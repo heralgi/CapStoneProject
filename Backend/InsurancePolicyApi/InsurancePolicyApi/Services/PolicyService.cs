@@ -21,9 +21,7 @@ namespace InsurancePolicyApi.Services
             _planRepository = planRepository;
         }
 
-        public async Task<Policy> PurchasePolicyAsync(
-    int customerId,
-    CustomerPolicyPurchaseRequest request)
+        public async Task<Policy> PurchasePolicyAsync(int customerId, CustomerPolicyPurchaseRequest request)
         {
             var customer = await _customerRepository.GetByIdAsync(customerId);
 

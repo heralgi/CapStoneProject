@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Plan;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,9 +27,9 @@ namespace InsurancePolicyApi.Controllers
 
         // POST: api/policyplans
         [HttpPost]
-        public async Task<IActionResult> Add(PolicyPlan plan)
+        public async Task<IActionResult> Add(PlanRequest planRequest)
         {
-            var created = await _service.AddAsync(plan);
+            var created = await _service.AddAsync(planRequest);
 
             return CreatedAtAction(
                 nameof(GetByProductId),

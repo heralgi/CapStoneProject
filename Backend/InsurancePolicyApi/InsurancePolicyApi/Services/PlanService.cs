@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Plan;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Repositories;
 
 namespace InsurancePolicyApi.Services
@@ -21,9 +22,9 @@ namespace InsurancePolicyApi.Services
             return await _planRepository.GetByProductIdAsync(productId);
         }
 
-        public async Task<PolicyPlan> AddAsync(PolicyPlan plan)
+        public async Task<PolicyPlan> AddAsync(PlanRequest plan)
         {
-            var product = await _productRepository.GetByIdAsync(plan.InsuranceProductId);
+            var product = await _productRepository.GetByIdAsync(plan.ProductId);
 
             if (product == null)
                 throw new Exception("Insurance Product does not exist.");
@@ -34,9 +35,23 @@ namespace InsurancePolicyApi.Services
             {
                 throw new Exception("Coverage amount must be higher than premium amount.");
             }
+
+            var NewPlan = new PolicyPlan()
+            {
+                InsuranceProductId = plan.ProductId,
+                PlanName = plan.PlanName,
+                CoverageAmount = plan.CoverageAmount,
+                PremiumAmount = plan.PremiumAmount,
+                IsActive = plan.IsActive,
+                TermsAndConditions = plan.TermsAndConditions,
+                PremiumType = plan.PremiumType,
+                DurationYears = plan.DurationYears,
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
             plan.IsActive = true;
 
-            return await _planRepository.AddAsync(plan);
+            return await _planRepository.AddAsync(NewPlan);
         }
 
         public async Task<PolicyPlan?> UpdateAsync(int id, PolicyPlan plan)

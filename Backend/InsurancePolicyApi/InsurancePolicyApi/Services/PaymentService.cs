@@ -27,6 +27,9 @@ namespace InsurancePolicyApi.Services
             if (policy.PolicyStatus != PolicyStatus.Active)
                 throw new Exception("Premium payment can only be made for active policies.");
 
+            if (payment.Amount < 1)
+                throw new Exception("Amount must be greater than zero");
+
             payment.PaymentDate = DateTime.UtcNow;
             payment.PaymentStatus = PaymentStatus.Success;
 
