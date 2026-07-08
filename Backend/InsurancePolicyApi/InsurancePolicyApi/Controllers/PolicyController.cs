@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Policy;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,10 +43,10 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // POST: api/policies/purchase
-        [HttpPost("purchase")]
-        public async Task<IActionResult> PurchasePolicy(Policy policy)
+        [HttpPost("purchase/{Id:int}")]
+        public async Task<IActionResult> PurchasePolicy(int Id, CustomerPolicyPurchaseRequest request)
         {
-            var result = await _service.PurchasePolicyAsync(policy);
+            var result = await _service.PurchasePolicyAsync(Id, request);
 
             return CreatedAtAction(
                 nameof(GetByPolicyNumber),

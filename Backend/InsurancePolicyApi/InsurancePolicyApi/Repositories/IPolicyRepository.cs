@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Policy;
+using InsurancePolicyApi.Entities;
 
 namespace InsurancePolicyApi.Repositories
 {

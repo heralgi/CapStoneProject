@@ -30,7 +30,10 @@ namespace InsurancePolicyApi.Services
 
             if (!product.IsActive)
                 throw new Exception("Cannot add a plan to an inactive insurance product.");
-
+            if (plan.CoverageAmount <= plan.PremiumAmount)
+            {
+                throw new Exception("Coverage amount must be higher than premium amount.");
+            }
             plan.IsActive = true;
 
             return await _planRepository.AddAsync(plan);
@@ -42,12 +45,17 @@ namespace InsurancePolicyApi.Services
 
             if (existing == null)
                 return null;
-
+            if (plan.CoverageAmount <= plan.PremiumAmount)
+            {
+                throw new Exception("Coverage amount must be higher than premium amount.");
+            }
             existing.PlanName = plan.PlanName;
             existing.CoverageAmount = plan.CoverageAmount;
             existing.PremiumAmount = plan.PremiumAmount;
             existing.PremiumType = plan.PremiumType;
             existing.TermsAndConditions = plan.TermsAndConditions;
+            existing.DurationYears = plan.DurationYears;
+            existing.UpdatedDate = DateTime.UtcNow;
 
             return await _planRepository.UpdateAsync(existing);
         }

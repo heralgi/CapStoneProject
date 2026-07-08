@@ -1,10 +1,11 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Policy;
+using InsurancePolicyApi.Entities;
 
 namespace InsurancePolicyApi.Services
 {
     public interface IPolicyService
     {
-        Task<Policy> PurchasePolicyAsync(Policy policy);
+        Task<Policy> PurchasePolicyAsync(int customerId, CustomerPolicyPurchaseRequest request);
 
         Task<Policy?> IssuePolicyAsync(int policyId);
 

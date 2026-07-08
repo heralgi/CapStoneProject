@@ -19,10 +19,22 @@ namespace InsurancePolicyApi.Repositories
             return await _ctx.InsuranceProducts.ToListAsync();
         }
 
+        public async Task<bool> ExistsByNameAsync(string productName)
+        {
+            return await _ctx.InsuranceProducts
+                .AnyAsync(p => p.ProductName == productName);
+        }
+
         public async Task<InsuranceProduct?> GetByIdAsync(int id)
         {
             return await _ctx.InsuranceProducts
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+        public async Task<IEnumerable<InsuranceProduct>> GetActiveAsync()
+        {
+            return await _ctx.InsuranceProducts
+                .Where(p => p.IsActive)
+                .ToListAsync();
         }
 
         public async Task<InsuranceProduct> AddAsync(InsuranceProduct product)

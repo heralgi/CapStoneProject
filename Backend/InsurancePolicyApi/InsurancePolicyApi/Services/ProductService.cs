@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Product;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Repositories;
 
 namespace InsurancePolicyApi.Services
@@ -16,15 +17,32 @@ namespace InsurancePolicyApi.Services
         {
             return await _repository.GetAllAsync();
         }
+        public async Task<IEnumerable<InsuranceProduct>> GetAllActiveAsync()
+        {
+            return await _repository.GetActiveAsync();
+        }
 
         public async Task<InsuranceProduct?> GetByIdAsync(int id)
         {
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task<InsuranceProduct> AddAsync(InsuranceProduct product)
+        public async Task<InsuranceProduct> AddAsync(ProductRequest request)
         {
-            product.IsActive = true;
+            var exists = await _repository.ExistsByNameAsync(request.ProductName);
+
+            if (exists)
+                throw new InvalidOperationException("Product name already exists.");
+
+            var product = new InsuranceProduct
+            {
+                ProductName = request.ProductName,
+                ProductType = request.ProductType,
+                Description = request.Description,
+                IsActive = request.IsActive,
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
 
             return await _repository.AddAsync(product);
         }

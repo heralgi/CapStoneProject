@@ -4,7 +4,9 @@ namespace InsurancePolicyApi.Repositories
 {
     public interface IProductRepository
     {
+        Task<bool> ExistsByNameAsync(string productName);
         Task<IEnumerable<InsuranceProduct>> GetAllAsync();
+        Task<IEnumerable<InsuranceProduct>> GetActiveAsync();
 
         Task<InsuranceProduct?> GetByIdAsync(int id);
 
