@@ -1,6 +1,8 @@
 ﻿using InsurancePolicyApi.DTOs.Plan;
 using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsurancePolicyApi.Controllers
@@ -16,7 +18,10 @@ namespace InsurancePolicyApi.Controllers
             _service = service;
         }
 
+
+
         // GET: api/policyplans/product/1
+        [Authorize]
         [HttpGet("product/{productId:int}")]
         public async Task<IActionResult> GetByProductId(int productId)
         {
@@ -26,6 +31,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // POST: api/policyplans
+        [Authorize(Roles=nameof(UserRole.Admin))]
         [HttpPost]
         public async Task<IActionResult> Add(PlanRequest planRequest)
         {

@@ -19,9 +19,24 @@ namespace InsurancePolicyApi.Services
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<PolicyPlan>> GetByProductIdAsync(int productId)
+        public async Task<IEnumerable<PlanResponse>> GetByProductIdAsync(int productId)
         {
-            return await _planRepository.GetByProductIdAsync(productId);
+            var plans = await _planRepository.GetByProductIdAsync(productId);
+
+            var listResponse = new List<PlanResponse>();
+
+            foreach (var element in plans)
+            {
+                listResponse.Add(new PlanResponse
+                {
+                    PlanId = element.Id,
+                    PlanName = element.PlanName,
+                    ProductId = element.InsuranceProductId,
+                    IsActive = element.IsActive
+                });
+            }
+
+            return listResponse;
         }
 
         public async Task<PlanResponse> AddAsync(PlanRequest plan)

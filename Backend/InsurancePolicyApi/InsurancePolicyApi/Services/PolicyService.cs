@@ -77,9 +77,9 @@ namespace InsurancePolicyApi.Services
             return await _policyRepository.GetByCustomerIdAsync(customerId);
         }
 
-        public async Task<IEnumerable<Policy>> GetPoliciesAsync()
+        public async Task<IEnumerable<Policy>> GetPoliciesAsync(int userId)
         {
-            return await _policyRepository.GetPoliciesAsync();
+            return await _policyRepository.GetPoliciesAsync(userId);
         }
     }
 }

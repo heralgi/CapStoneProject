@@ -1,7 +1,9 @@
 ﻿using InsurancePolicyApi.DTOs.Policy;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace InsurancePolicyApi.Controllers
 {
@@ -18,9 +20,11 @@ namespace InsurancePolicyApi.Controllers
 
         // GET: api/policies
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetPolicies()
         {
-            return Ok(await _service.GetPoliciesAsync());
+            int userId = int.Parse(User.FindFirst("userid")!.Value);
+            return Ok(await _service.GetPoliciesAsync(userId));
         }
 
         // GET: api/policies/POL12345
@@ -43,10 +47,11 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // POST: api/policies/purchase
-        [HttpPost("purchase/{Id:int}")]
-        public async Task<IActionResult> PurchasePolicy(int Id, CustomerPolicyPurchaseRequest request)
+        [HttpPost("purchase")]
+        public async Task<IActionResult> PurchasePolicy(CustomerPolicyPurchaseRequest request)
         {
-            var result = await _service.PurchasePolicyAsync(Id, request);
+            int userId = int.Parse(User.FindFirst("userid")!.Value);
+            var result = await _service.PurchasePolicyAsync(userId, request);
 
             return CreatedAtAction(
                 nameof(GetByPolicyNumber),

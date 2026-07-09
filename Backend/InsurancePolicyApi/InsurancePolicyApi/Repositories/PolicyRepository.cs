@@ -47,12 +47,14 @@ namespace InsurancePolicyApi.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Policy>> GetPoliciesAsync()
+        public async Task<IEnumerable<Policy>> GetPoliciesAsync(int userId)
         {
-            return await _ctx.Policies
+            var policy = await _ctx.Policies
                 .Include(p => p.Customer)
                 .Include(p => p.PolicyPlan)
+                .Where(p => p.Customer.UserId == userId)
                 .ToListAsync();
+            return policy;
         }
 
         public async Task<Policy?> GetByIdAsync(int id)

@@ -5,7 +5,7 @@ namespace InsurancePolicyApi.Services
 {
     public interface IPlanService
     {
-        Task<IEnumerable<PolicyPlan>> GetByProductIdAsync(int productId);
+        Task<IEnumerable<PlanResponse>> GetByProductIdAsync(int productId);
 
         Task<PlanResponse> AddAsync(PlanRequest plan);
 

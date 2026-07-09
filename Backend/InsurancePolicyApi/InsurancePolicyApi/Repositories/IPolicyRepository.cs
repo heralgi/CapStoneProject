@@ -13,7 +13,7 @@ namespace InsurancePolicyApi.Repositories
 
         Task<IEnumerable<Policy>> GetByCustomerIdAsync(int customerId);
 
-        Task<IEnumerable<Policy>> GetPoliciesAsync();
+        Task<IEnumerable<Policy>> GetPoliciesAsync(int userId);
 
         Task<Policy?> GetByIdAsync(int id);
 
