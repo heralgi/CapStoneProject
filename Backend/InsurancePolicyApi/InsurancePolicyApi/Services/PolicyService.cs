@@ -21,9 +21,9 @@ namespace InsurancePolicyApi.Services
             _planRepository = planRepository;
         }
 
-        public async Task<Policy> PurchasePolicyAsync(int customerId, CustomerPolicyPurchaseRequest request)
+        public async Task<PolicyResponse> PurchasePolicyAsync(int userId, CustomerPolicyPurchaseRequest request)
         {
-            var customer = await _customerRepository.GetByIdAsync(customerId);
+            var customer = await _customerRepository.GetByUserIdAsync(userId);
 
             if (customer == null)
                 throw new Exception("Customer not found.");
@@ -38,7 +38,7 @@ namespace InsurancePolicyApi.Services
 
             var policy = new Policy
             {
-                CustomerId = customerId,
+                CustomerId = customer.Id,
                 PolicyPlanId = request.PlanId,
                 PolicyNumber = GeneratePolicyNumber(),
                 PolicyStatus = PolicyStatus.PendingPayment,
@@ -48,13 +48,28 @@ namespace InsurancePolicyApi.Services
                 UpdatedDate = DateTime.UtcNow
             };
 
-            return await _policyRepository.PurchasePolicyAsync(policy);
+            var response = await _policyRepository.PurchasePolicyAsync(policy);
+            PolicyResponse resDto = new PolicyResponse()
+            {
+                PolicyId = response.Id,
+                PolicyNumber = response.PolicyNumber,
+                CustomerId = response.CustomerId,
+                PlanName = response.PolicyPlan.PlanName,
+                CoverageAmount = response.PolicyPlan.CoverageAmount,
+                PremiumAmount = response.PolicyPlan.PremiumAmount,
+                TotalPremiumPaid = response.TotalPremiumPaid,
+                PremiumType = response.PolicyPlan.PremiumType.ToString(),
+                PolicyStatus = response.PolicyStatus.ToString(),
+                StartDate = response.StartDate,
+                EndDate = response.EndDate
+            };
+            return resDto;
         }
         private static string GeneratePolicyNumber()
         {
             return $"POL{Guid.NewGuid().ToString("N")[..10].ToUpper()}";
         }
-        public async Task<Policy?> IssuePolicyAsync(int policyId)
+        public async Task<PolicyResponse?> IssuePolicyAsync(int policyId)
         {
             var policy = await _policyRepository.GetByIdAsync(policyId);
 
@@ -64,22 +79,92 @@ namespace InsurancePolicyApi.Services
             policy.PolicyStatus = PolicyStatus.Active;
             policy.StartDate = DateTime.UtcNow;
 
-            return await _policyRepository.UpdateAsync(policy);
+            var response = await _policyRepository.UpdateAsync(policy);
+            PolicyResponse resDto = new PolicyResponse()
+            {
+                PolicyId = response.Id,
+                PolicyNumber = response.PolicyNumber,
+                CustomerId = response.CustomerId,
+                PlanName = response.PolicyPlan.PlanName,
+                CoverageAmount = response.PolicyPlan.CoverageAmount,
+                PremiumAmount = response.PolicyPlan.PremiumAmount,
+                TotalPremiumPaid = response.TotalPremiumPaid,
+                PremiumType = response.PolicyPlan.PremiumType.ToString(),
+                PolicyStatus = response.PolicyStatus.ToString(),
+                StartDate = response.StartDate,
+                EndDate = response.EndDate
+            };
+            return resDto;
         }
 
-        public async Task<Policy?> GetByPolicyNumberAsync(string policyNumber)
+        public async Task<PolicyResponse?> GetByPolicyNumberAsync(string policyNumber)
         {
-            return await _policyRepository.GetByPolicyNumberAsync(policyNumber);
+            var response = await _policyRepository.GetByPolicyNumberAsync(policyNumber);
+            PolicyResponse resDto = new PolicyResponse()
+            {
+                PolicyId = response.Id,
+                PolicyNumber = response.PolicyNumber,
+                CustomerId = response.CustomerId,
+                PlanName = response.PolicyPlan.PlanName,
+                CoverageAmount = response.PolicyPlan.CoverageAmount,
+                PremiumAmount = response.PolicyPlan.PremiumAmount,
+                TotalPremiumPaid = response.TotalPremiumPaid,
+                PremiumType = response.PolicyPlan.PremiumType.ToString(),
+                PolicyStatus = response.PolicyStatus.ToString(),
+                StartDate = response.StartDate,
+                EndDate = response.EndDate
+            };
+            return resDto;
         }
 
-        public async Task<IEnumerable<Policy>> GetByCustomerIdAsync(int customerId)
+        public async Task<IEnumerable<PolicyResponse>> GetByCustomerIdAsync(int customerId)
         {
-            return await _policyRepository.GetByCustomerIdAsync(customerId);
+            var responses = await _policyRepository.GetByCustomerIdAsync(customerId);
+            var listresDto = new List<PolicyResponse>();
+
+            foreach (Policy response in responses)
+            {
+                listresDto.Add(new PolicyResponse()
+                {
+                    PolicyId = response.Id,
+                    PolicyNumber = response.PolicyNumber,
+                    CustomerId = response.CustomerId,
+                    PlanName = response.PolicyPlan.PlanName,
+                    CoverageAmount = response.PolicyPlan.CoverageAmount,
+                    PremiumAmount = response.PolicyPlan.PremiumAmount,
+                    TotalPremiumPaid = response.TotalPremiumPaid,
+                    PremiumType = response.PolicyPlan.PremiumType.ToString(),
+                    PolicyStatus = response.PolicyStatus.ToString(),
+                    StartDate = response.StartDate,
+                    EndDate = response.EndDate
+                });
+            }
+            return listresDto;
         }
 
-        public async Task<IEnumerable<Policy>> GetPoliciesAsync(int userId)
+        public async Task<IEnumerable<PolicyResponse>> GetPoliciesAsync(int userId)
         {
-            return await _policyRepository.GetPoliciesAsync(userId);
+            var policies = await _policyRepository.GetPoliciesAsync(userId);
+            var policyResponses = new List<PolicyResponse>();
+            foreach(Policy policy in policies)
+            {
+                policyResponses.Add(new PolicyResponse()
+                {
+                    PolicyId = policy.Id,
+                    PolicyNumber = policy.PolicyNumber,
+                    CustomerId = policy.CustomerId,
+                    PlanName = policy.PolicyPlan.PlanName,
+                    CoverageAmount = policy.PolicyPlan.CoverageAmount,
+                    PremiumAmount = policy.PolicyPlan.PremiumAmount,
+                    TotalPremiumPaid = policy.TotalPremiumPaid,
+                    PremiumType = policy.PolicyPlan.PremiumType.ToString(),
+                    PolicyStatus = policy.PolicyStatus.ToString(),
+                    StartDate = policy.StartDate,
+                    EndDate = policy.EndDate
+                });
+            }
+
+            return policyResponses;
         }
     }
 }

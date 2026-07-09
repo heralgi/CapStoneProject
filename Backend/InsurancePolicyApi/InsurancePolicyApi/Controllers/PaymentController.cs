@@ -1,5 +1,7 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Payment;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsurancePolicyApi.Controllers
@@ -17,6 +19,7 @@ namespace InsurancePolicyApi.Controllers
 
         // GET: api/premiumpayments
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetPaymentHistory()
         {
             return Ok(await _service.GetPaymentHistoryAsync());
@@ -31,7 +34,7 @@ namespace InsurancePolicyApi.Controllers
 
         // POST: api/premiumpayments
         [HttpPost]
-        public async Task<IActionResult> RecordPayment(PremiumPayment payment)
+        public async Task<IActionResult> RecordPayment(PaymentRequest payment)
         {
             var result = await _service.RecordPaymentAsync(payment);
 

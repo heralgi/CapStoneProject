@@ -35,9 +35,11 @@ namespace InsurancePolicyApi
 
             builder.Services.AddScoped<IPolicyRepository, PolicyRepository>();
             builder.Services.AddScoped<IPolicyService, PolicyService>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPaymentService, PremiumPaymentService>();
+
             builder.Services.AddScoped<IClaimRepository, ClaimRepository>();
             builder.Services.AddScoped<IClaimService, ClaimService>();
-
             builder.Services.AddScoped<IClaimDocumentRepository, ClaimDocumentRepository>();
             builder.Services.AddScoped<IClaimDocumentService, ClaimDocumentService>();
             builder.Services.AddScoped<IClaimStatusHistoryRepository, ClaimStatusHistoryRepository>();

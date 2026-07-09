@@ -44,6 +44,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/policyplans/5
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, PolicyPlan plan)
         {
@@ -56,6 +57,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/policyplans/deactivate/5
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut("deactivate/{id:int}")]
         public async Task<IActionResult> Deactivate(int id)
         {

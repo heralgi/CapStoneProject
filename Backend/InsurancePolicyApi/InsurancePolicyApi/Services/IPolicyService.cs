@@ -5,14 +5,14 @@ namespace InsurancePolicyApi.Services
 {
     public interface IPolicyService
     {
-        Task<Policy> PurchasePolicyAsync(int customerId, CustomerPolicyPurchaseRequest request);
+        Task<PolicyResponse> PurchasePolicyAsync(int customerId, CustomerPolicyPurchaseRequest request);
 
-        Task<Policy?> IssuePolicyAsync(int policyId);
+        Task<PolicyResponse?> IssuePolicyAsync(int policyId);
 
-        Task<Policy?> GetByPolicyNumberAsync(string policyNumber);
+        Task<PolicyResponse?> GetByPolicyNumberAsync(string policyNumber);
 
-        Task<IEnumerable<Policy>> GetByCustomerIdAsync(int customerId);
+        Task<IEnumerable<PolicyResponse>> GetByCustomerIdAsync(int customerId);
 
-        Task<IEnumerable<Policy>> GetPoliciesAsync(int userId);
+        Task<IEnumerable<PolicyResponse>> GetPoliciesAsync(int userId);
     }
 }

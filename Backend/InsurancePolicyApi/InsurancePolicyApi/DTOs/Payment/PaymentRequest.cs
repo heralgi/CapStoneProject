@@ -22,6 +22,8 @@ namespace InsurancePolicyApi.DTOs.Payment
         [StringLength(100)]
         public string TransactionReference { get; set; } = null!;
 
+        public DateTime PaymentDate { get; set; }
+
         [Required]
         [EnumDataType(typeof(PaymentStatus))]
         public PaymentStatus PaymentStatus { get; set; }

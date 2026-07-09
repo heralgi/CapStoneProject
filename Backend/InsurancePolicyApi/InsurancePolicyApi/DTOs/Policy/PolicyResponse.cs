@@ -7,11 +7,9 @@ namespace InsurancePolicyApi.DTOs.Policy
 
         public string PolicyNumber { get; set; } = null!;
 
-        public string CustomerName { get; set; } = null!;
+        public int CustomerId { get; set; }
 
         public string PlanName { get; set; } = null!;
-
-        public string ProductType { get; set; } = null!;
 
         public decimal CoverageAmount { get; set; }
 
