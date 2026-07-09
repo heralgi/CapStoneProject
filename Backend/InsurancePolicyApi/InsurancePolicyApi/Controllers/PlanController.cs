@@ -33,7 +33,7 @@ namespace InsurancePolicyApi.Controllers
 
             return CreatedAtAction(
                 nameof(GetByProductId),
-                new { productId = created.InsuranceProductId },
+                new { productId = created.ProductId },
                 created);
         }
 

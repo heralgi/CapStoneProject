@@ -1,6 +1,8 @@
 ﻿using InsurancePolicyApi.DTOs.Plan;
 using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Repositories;
+using System.Numerics;
 
 namespace InsurancePolicyApi.Services
 {
@@ -22,7 +24,7 @@ namespace InsurancePolicyApi.Services
             return await _planRepository.GetByProductIdAsync(productId);
         }
 
-        public async Task<PolicyPlan> AddAsync(PlanRequest plan)
+        public async Task<PlanResponse> AddAsync(PlanRequest plan)
         {
             var product = await _productRepository.GetByIdAsync(plan.ProductId);
 
@@ -51,7 +53,16 @@ namespace InsurancePolicyApi.Services
             };
             plan.IsActive = true;
 
-            return await _planRepository.AddAsync(NewPlan);
+            var planRes = await _planRepository.AddAsync(NewPlan);
+
+            PlanResponse responseDto = new PlanResponse()
+            {
+                PlanId = planRes.Id,
+                PlanName = planRes.PlanName,
+                ProductId = planRes.InsuranceProductId,
+                IsActive = planRes.IsActive
+            };
+            return responseDto;
         }
 
         public async Task<PolicyPlan?> UpdateAsync(int id, PolicyPlan plan)

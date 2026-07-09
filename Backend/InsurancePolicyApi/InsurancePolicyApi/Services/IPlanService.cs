@@ -7,7 +7,7 @@ namespace InsurancePolicyApi.Services
     {
         Task<IEnumerable<PolicyPlan>> GetByProductIdAsync(int productId);
 
-        Task<PolicyPlan> AddAsync(PlanRequest plan);
+        Task<PlanResponse> AddAsync(PlanRequest plan);
 
         Task<PolicyPlan?> UpdateAsync(int id, PolicyPlan plan);
 

@@ -88,7 +88,7 @@ namespace InsurancePolicyApi
                 options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Movie Rental App"
+                    Title = "Insurance App"
                 }
                 );
 
