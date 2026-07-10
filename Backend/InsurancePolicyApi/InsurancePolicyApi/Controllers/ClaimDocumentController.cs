@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ namespace InsurancePolicyApi.Controllers
 
         // POST: api/claimdocuments
         [HttpPost]
-        public async Task<IActionResult> AddDocument(ClaimDocument document)
+        public async Task<IActionResult> AddDocument(ClaimDocumentRequest document)
         {
             var result = await _service.AddDocumentAsync(document);
 

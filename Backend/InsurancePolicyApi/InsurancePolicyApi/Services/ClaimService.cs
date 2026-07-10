@@ -1,6 +1,8 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Repositories;
+using System.Security.Claims;
 
 namespace InsurancePolicyApi.Services
 {
@@ -17,7 +19,7 @@ namespace InsurancePolicyApi.Services
             _policyRepository = policyRepository;
         }
 
-        public async Task<Claim> RaiseClaimAsync(Claim claim)
+        public async Task<ClaimResponse> RaiseClaimAsync(ClaimRequest claim)
         {
             var policy = await _policyRepository.GetByIdAsync(claim.PolicyId);
 
@@ -27,14 +29,25 @@ namespace InsurancePolicyApi.Services
             if (policy.PolicyStatus != PolicyStatus.Active)
                 throw new Exception("Claim can only be raised against an active policy.");
 
-            claim.ClaimNumber = Guid.NewGuid().ToString("N")[..12].ToUpper();
-            claim.ClaimStatus = ClaimStatus.Submitted;
-            claim.CreatedDate = DateTime.UtcNow;
+            Entities.Claim claimMod = new Entities.Claim()
+            {
+                PolicyId = claim.PolicyId,
+                ClaimNumber = Guid.NewGuid().ToString("N")[..12].ToUpper(),
+                ClaimAmount = claim.ClaimAmount,
+                ClaimReason = claim.ClaimReason,
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow,
+                IncidentDate = claim.IncidentDate
+            };
 
-            return await _claimRepository.RaiseClaimAsync(claim);
+            var claimModRes = await _claimRepository.RaiseClaimAsync(claimMod);
+
+            var claimRes = GetClaimResponse(claimModRes);
+
+            return claimRes;
         }
 
-        public async Task<Claim?> ReviewClaimAsync(int claimId)
+        public async Task<ClaimResponse?> ReviewClaimAsync(int claimId)
         {
             var claim = await _claimRepository.GetByIdAsync(claimId);
 
@@ -43,10 +56,13 @@ namespace InsurancePolicyApi.Services
 
             claim.ClaimStatus = ClaimStatus.UnderReview;
 
-            return await _claimRepository.ReviewClaimAsync(claim);
+            var claimModRes = await _claimRepository.ReviewClaimAsync(claim);
+            var claimRes = GetClaimResponse(claimModRes);
+
+            return claimRes;
         }
 
-        public async Task<Claim?> ApproveClaimAsync(int claimId)
+        public async Task<ClaimResponse?> ApproveClaimAsync(int claimId)
         {
             var claim = await _claimRepository.GetByIdAsync(claimId);
 
@@ -55,10 +71,13 @@ namespace InsurancePolicyApi.Services
 
             claim.ClaimStatus = ClaimStatus.Approved;
 
-            return await _claimRepository.ApproveClaimAsync(claim);
+            var claimModRes = await _claimRepository.ApproveClaimAsync(claim);
+            var claimRes = GetClaimResponse(claimModRes);
+
+            return claimRes;
         }
 
-        public async Task<Claim?> RejectClaimAsync(int claimId)
+        public async Task<ClaimResponse?> RejectClaimAsync(int claimId)
         {
             var claim = await _claimRepository.GetByIdAsync(claimId);
 
@@ -67,17 +86,69 @@ namespace InsurancePolicyApi.Services
 
             claim.ClaimStatus = ClaimStatus.Rejected;
 
-            return await _claimRepository.RejectClaimAsync(claim);
+            var claimModRes = await _claimRepository.RejectClaimAsync(claim);
+            var claimRes = GetClaimResponse(claimModRes);
+
+            return claimRes;
         }
 
-        public async Task<IEnumerable<Claim>> GetByPolicyAsync(int policyId)
+        public async Task<IEnumerable<ClaimResponse>> GetByPolicyAsync(int policyId)
         {
-            return await _claimRepository.GetByPolicyAsync(policyId);
+            var claimList = await _claimRepository.GetByPolicyAsync(policyId);
+            var claims = new List<ClaimResponse>();
+            foreach (Entities.Claim claim in claimList)
+            {
+                claims.Add(GetClaimResponse(claim));
+            }
+            return claims;
         }
 
-        public async Task<IEnumerable<Claim>> GetClaimsAsync()
+        public async Task<IEnumerable<ClaimResponse>> GetClaimsAsync(int userId)
         {
-            return await _claimRepository.GetClaimsAsync();
+            var policies = await _policyRepository.GetPoliciesAsync(userId);
+            var claims = new List<ClaimResponse>();
+
+            foreach (Policy policy in policies)
+            {
+                var claimList = await _claimRepository.GetByPolicyAsync(policy.Id);
+
+                foreach (Entities.Claim claim in claimList)
+                {
+                    claims.Add(GetClaimResponse(claim));
+                }
+            }
+
+            return claims;
+        }
+
+
+        public async Task<IEnumerable<ClaimResponse>> GetClaimsAsync()
+        {
+            var claimList = await _claimRepository.GetClaimsAsync();
+            var claims = new List<ClaimResponse>();
+            foreach (Entities.Claim claim in claimList)
+            {
+                claims.Add(GetClaimResponse(claim));
+            }
+            return claims;
+        }
+
+        ClaimResponse GetClaimResponse(Entities.Claim claim)
+        {
+            ClaimResponse claimresponse = new ClaimResponse()
+            {
+                ClaimId = claim.Id,
+                PolicyId = claim.PolicyId,
+                ClaimNumber = claim.ClaimNumber,
+                ClaimAmount = claim.ClaimAmount,
+                ClaimReason = claim.ClaimReason,
+                ClaimStatus = claim.ClaimStatus.ToString(),
+                PolicyNumber = claim.Policy.PolicyNumber,
+                IncidentDate = claim.IncidentDate,
+                AdminRemarks = claim.AdminRemarks
+            };
+
+            return claimresponse;
         }
     }
 }

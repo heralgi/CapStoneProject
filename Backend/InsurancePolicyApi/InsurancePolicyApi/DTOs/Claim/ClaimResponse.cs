@@ -9,7 +9,7 @@ namespace InsurancePolicyApi.DTOs.Claim
 
         public string PolicyNumber { get; set; } = null!;
 
-        public string CustomerName { get; set; } = null!;
+        public int PolicyId { get; set; }
 
         public decimal ClaimAmount { get; set; }
 
@@ -19,7 +19,7 @@ namespace InsurancePolicyApi.DTOs.Claim
 
         public string ClaimStatus { get; set; } = null!;
 
-        public string? AgentRemarks { get; set; }
+        public string? InternalStaffRemarks { get; set; }
 
         public string? AdminRemarks { get; set; }
 

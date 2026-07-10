@@ -1,5 +1,7 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsurancePolicyApi.Controllers
@@ -16,10 +18,12 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // GET: api/claims
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetClaims()
         {
-            return Ok(await _service.GetClaimsAsync());
+            int userId = int.Parse(User.FindFirst("userid")!.Value);
+            return Ok(await _service.GetClaimsAsync(userId));
         }
 
         // GET: api/claims/policy/5
@@ -31,7 +35,7 @@ namespace InsurancePolicyApi.Controllers
 
         // POST: api/claims/raise
         [HttpPost("raise")]
-        public async Task<IActionResult> RaiseClaim(Claim claim)
+        public async Task<IActionResult> RaiseClaim(ClaimRequest claim)
         {
             var result = await _service.RaiseClaimAsync(claim);
 

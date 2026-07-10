@@ -9,6 +9,8 @@ namespace InsurancePolicyApi.DTOs.Claim
     public class ClaimDocumentRequest
     {
         [Required]
+        public int ClaimId { get; set; }
+        [Required]
         [StringLength(200)]
         public string DocumentName { get; set; } = null!;
 

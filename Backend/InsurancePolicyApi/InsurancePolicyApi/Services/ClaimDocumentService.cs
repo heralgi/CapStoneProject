@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Repositories;
 
 namespace InsurancePolicyApi.Services
@@ -16,12 +17,17 @@ namespace InsurancePolicyApi.Services
             _claimRepository = claimRepository;
         }
 
-        public async Task<ClaimDocument> AddDocumentAsync(ClaimDocument document)
+        public async Task<ClaimDocument> AddDocumentAsync(ClaimDocumentRequest document)
         {
             var claim = await _claimRepository.GetByIdAsync(document.ClaimId);
 
             if (claim == null)
                 throw new Exception("Claim not found.");
+
+            ClaimDocument documentpost = new ClaimDocument()
+            {
+
+            };
 
             return await _documentRepository.AddDocumentAsync(document);
         }
