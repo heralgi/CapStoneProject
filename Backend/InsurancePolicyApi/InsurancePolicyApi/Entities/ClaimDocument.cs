@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace InsurancePolicyApi.Entities
 {
     /// <summary>A document reference submitted for claim verification (§9.8). Must be linked to a claim (DOC-BR-004, MAP-BR-006).</summary>
@@ -18,6 +20,7 @@ namespace InsurancePolicyApi.Entities
         public DateTime UploadedDate { get; set; }
 
         // Navigation
+        [JsonIgnore]
         public Claim Claim { get; set; } = null!;
     }
 }

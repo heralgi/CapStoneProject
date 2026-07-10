@@ -1,4 +1,5 @@
 using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace InsurancePolicyApi.Data
@@ -163,6 +164,18 @@ namespace InsurancePolicyApi.Data
                     .HasForeignKey(h => h.UpdatedByUserId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1004,
+                    FullName = "System Administrator",
+                    Email = "admin@example.com",
+                    MobileNumber = "9999999999",
+                    Role = UserRole.Admin,
+                    PasswordHash = "AQAAAAIAAYagAAAAEJMRgHPtb2oo4lA055eMUC+sEE1fdQmOhAnlhUBOBB3gmpCAMf3bm3Nf+LOrJgWOaA=="
+                }
+            );
         }
     }
 }

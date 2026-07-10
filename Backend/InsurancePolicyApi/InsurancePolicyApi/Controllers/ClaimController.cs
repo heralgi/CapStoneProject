@@ -1,5 +1,6 @@
 ﻿using InsurancePolicyApi.DTOs.Claim;
 using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,11 @@ namespace InsurancePolicyApi.Controllers
         public async Task<IActionResult> GetClaims()
         {
             int userId = int.Parse(User.FindFirst("userid")!.Value);
+            if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)!.Value == UserRole.Admin.ToString())
+            {
+                return Ok(await _service.GetClaimsAsync());
+            }
+            
             return Ok(await _service.GetClaimsAsync(userId));
         }
 

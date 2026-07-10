@@ -10,6 +10,7 @@ namespace InsurancePolicyApi.DTOs.Claim
         public string PolicyNumber { get; set; } = null!;
 
         public int PolicyId { get; set; }
+        public int ClaimDocumentId { get; set; }
 
         public decimal ClaimAmount { get; set; }
 

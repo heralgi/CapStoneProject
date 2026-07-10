@@ -1,4 +1,5 @@
 using InsurancePolicyApi.Entities.Enums;
+using System.Text.Json.Serialization;
 
 namespace InsurancePolicyApi.Entities
 {
@@ -25,7 +26,9 @@ namespace InsurancePolicyApi.Entities
         public DateTime UpdatedDate { get; set; }
 
         // Navigation
+        [JsonIgnore]
         public Claim Claim { get; set; } = null!;
+        [JsonIgnore]
         public User UpdatedByUser { get; set; } = null!;
     }
 }

@@ -26,10 +26,14 @@ namespace InsurancePolicyApi.Services
 
             ClaimDocument documentpost = new ClaimDocument()
             {
-
+                ClaimId = document.ClaimId,
+                DocumentName = document.DocumentName,
+                DocumentType = document.DocumentType,
+                DocumentReference = document.DocumentReference,
+                UploadedDate = DateTime.UtcNow
             };
 
-            return await _documentRepository.AddDocumentAsync(document);
+            return await _documentRepository.AddDocumentAsync(documentpost);
         }
 
         public async Task<IEnumerable<ClaimDocument>> GetDocumentsByClaimAsync(int claimId)
