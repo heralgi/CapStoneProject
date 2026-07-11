@@ -47,14 +47,15 @@ namespace InsurancePolicyApi.Services
             return claimRes;
         }
 
-        public async Task<ClaimResponse?> ReviewClaimAsync(int claimId)
+        public async Task<ClaimResponse?> ReviewClaimAsync(int claimId, ClaimReviewRequest crr)
         {
             var claim = await _claimRepository.GetByIdAsync(claimId);
 
             if (claim == null)
                 return null;
 
-            claim.ClaimStatus = ClaimStatus.UnderReview;
+            claim.ClaimStatus = crr.RecommendedStatus;
+            claim.AdminRemarks = crr.Remarks;
 
             var claimModRes = await _claimRepository.ReviewClaimAsync(claim);
             var claimRes = GetClaimResponse(claimModRes);

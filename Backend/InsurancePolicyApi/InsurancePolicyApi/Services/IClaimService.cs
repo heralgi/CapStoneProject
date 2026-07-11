@@ -7,7 +7,7 @@ namespace InsurancePolicyApi.Services
     {
         Task<ClaimResponse> RaiseClaimAsync(ClaimRequest claim);
 
-        Task<ClaimResponse?> ReviewClaimAsync(int claimId);
+        Task<ClaimResponse?> ReviewClaimAsync(int claimId, ClaimReviewRequest crr);
 
         Task<ClaimResponse?> ApproveClaimAsync(int claimId);
 

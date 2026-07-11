@@ -1,4 +1,4 @@
-using InsurancePolicyApi.Entities.Enums;
+ using InsurancePolicyApi.Entities.Enums;
 
 namespace InsurancePolicyApi.Entities
 {

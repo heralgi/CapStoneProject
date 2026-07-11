@@ -49,10 +49,11 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/claims/review/5
+        //[Authorize(Roles = UserRole.Admin)]
         [HttpPut("review/{claimId:int}")]
-        public async Task<IActionResult> ReviewClaim(int claimId)
+        public async Task<IActionResult> ReviewClaim(int claimId, ClaimReviewRequest crr)
         {
-            var result = await _service.ReviewClaimAsync(claimId);
+            var result = await _service.ReviewClaimAsync(claimId, crr);
 
             if (result == null)
                 return NotFound();
