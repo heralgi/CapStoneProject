@@ -28,7 +28,7 @@ namespace InsurancePolicyApi.Repositories
 
             await _ctx.SaveChangesAsync();
 
-            return claim;
+            return await _ctx.Claims.Include(p => p.Policy).Where(c => c.Id == claim.Id).FirstOrDefaultAsync();
         }
 
         public async Task<Claim?> ApproveClaimAsync(Claim claim)
@@ -52,6 +52,7 @@ namespace InsurancePolicyApi.Repositories
         public async Task<IEnumerable<Claim>> GetByPolicyAsync(int policyId)
         {
             return await _ctx.Claims
+                .Include(p => p.Policy)
                 .Where(c => c.PolicyId == policyId)
                 .ToListAsync();
         }
@@ -59,6 +60,7 @@ namespace InsurancePolicyApi.Repositories
         public async Task<IEnumerable<Claim>> GetClaimsAsync()
         {
             return await _ctx.Claims
+                .Include(p => p.Policy)
                 .Include(c => c.Policy)
                 .ToListAsync();
         }

@@ -53,6 +53,8 @@ namespace InsurancePolicyApi.Services
 
             if (claim == null)
                 return null;
+            if (claim.ClaimStatus == ClaimStatus.Approved || claim.ClaimStatus == ClaimStatus.Rejected)
+                throw new Exception("Policy already claimed");
 
             claim.ClaimStatus = crr.RecommendedStatus;
             claim.AdminRemarks = crr.Remarks;

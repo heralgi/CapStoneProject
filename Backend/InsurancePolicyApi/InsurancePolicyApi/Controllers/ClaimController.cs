@@ -33,6 +33,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // GET: api/claims/policy/5
+        [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
         [HttpGet("policy/{policyId:int}")]
         public async Task<IActionResult> GetByPolicy(int policyId)
         {
@@ -40,6 +41,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // POST: api/claims/raise
+        [Authorize(Roles = $"{nameof(UserRole.Customer)}")]
         [HttpPost("raise")]
         public async Task<IActionResult> RaiseClaim(ClaimRequest claim)
         {
@@ -49,7 +51,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/claims/review/5
-        //[Authorize(Roles = UserRole.Admin)]
+        [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
         [HttpPut("review/{claimId:int}")]
         public async Task<IActionResult> ReviewClaim(int claimId, ClaimReviewRequest crr)
         {
@@ -59,9 +61,11 @@ namespace InsurancePolicyApi.Controllers
                 return NotFound();
 
             return Ok(result);
+            
         }
 
         // PUT: api/claims/approve/5
+        [Authorize(Roles= $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
         [HttpPut("approve/{claimId:int}")]
         public async Task<IActionResult> ApproveClaim(int claimId)
         {
@@ -74,6 +78,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/claims/reject/5
+        [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
         [HttpPut("reject/{claimId:int}")]
         public async Task<IActionResult> RejectClaim(int claimId)
         {
