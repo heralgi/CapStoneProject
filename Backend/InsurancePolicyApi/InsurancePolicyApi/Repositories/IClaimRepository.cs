@@ -1,4 +1,6 @@
 ﻿
+using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.DTOs.Common;
 using InsurancePolicyApi.Entities;
 
 namespace InsurancePolicyApi.Repositories
@@ -15,7 +17,7 @@ namespace InsurancePolicyApi.Repositories
 
         Task<IEnumerable<Claim>> GetByPolicyAsync(int policyId);
 
-        Task<IEnumerable<Claim>> GetClaimsAsync();
+        Task<PagedResponse<ClaimResponse>> GetClaimsAsync(PageQuery pagequery);
 
         Task<Claim?> GetByIdAsync(int id);
     }

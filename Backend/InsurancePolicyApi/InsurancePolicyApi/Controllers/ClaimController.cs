@@ -1,4 +1,5 @@
 ﻿using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.DTOs.Common;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Services;
@@ -21,12 +22,12 @@ namespace InsurancePolicyApi.Controllers
         // GET: api/claims
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetClaims()
+        public async Task<IActionResult> GetClaims([FromQuery]PageQuery pq)
         {
             int userId = int.Parse(User.FindFirst("userid")!.Value);
             if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)!.Value == UserRole.Admin.ToString())
             {
-                return Ok(await _service.GetClaimsAsync());
+                return Ok(await _service.GetClaimsAsync(pq));
             }
             
             return Ok(await _service.GetClaimsAsync(userId));

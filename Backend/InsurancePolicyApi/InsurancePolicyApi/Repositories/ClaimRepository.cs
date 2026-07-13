@@ -1,4 +1,6 @@
 using InsurancePolicyApi.Data;
+using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.DTOs.Common;
 using InsurancePolicyApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,17 +59,54 @@ namespace InsurancePolicyApi.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Claim>> GetClaimsAsync()
+        public async Task<PagedResponse<ClaimResponse>> GetClaimsAsync(PageQuery pagequery)
         {
-            return await _ctx.Claims
-                .Include(p => p.Policy)
-                .Include(c => c.Policy)
+            var query = _ctx.Claims.AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(x => x.Id)
+                .Skip((pagequery.PageNumber - 1) * pagequery.PageSize)
+                .Take(pagequery.PageSize)
                 .ToListAsync();
+
+            List<ClaimResponse> claimResponseItems = GetClaimResponses(items);
+
+            return new PagedResponse<ClaimResponse>
+            {
+                Records = claimResponseItems,
+                CurrentPage = pagequery.PageNumber,
+                PageSize = pagequery.PageSize,
+                TotalRecords = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pagequery.PageSize)
+            };
         }
 
         public async Task<Claim?> GetByIdAsync(int id)
         {
             return await _ctx.Claims.FindAsync(id);
+        }
+
+        List<ClaimResponse> GetClaimResponses(List<Claim> claims)
+        {
+            List<ClaimResponse> claimresponses = new List<ClaimResponse>();
+            foreach (Claim claim in claims)
+            {
+                claimresponses.Add(new ClaimResponse()
+                {
+                    ClaimId = claim.Id,
+                    PolicyId = claim.PolicyId,
+                    ClaimNumber = claim.ClaimNumber,
+                    ClaimAmount = claim.ClaimAmount,
+                    ClaimReason = claim.ClaimReason,
+                    ClaimStatus = claim.ClaimStatus.ToString(),
+                    IncidentDate = claim.IncidentDate,
+                    AdminRemarks = claim.AdminRemarks
+                });
+            }
+
+            return claimresponses;
         }
     }
 }

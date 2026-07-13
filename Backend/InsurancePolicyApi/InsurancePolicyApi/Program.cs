@@ -1,5 +1,6 @@
 using InsurancePolicyApi.Data;
 using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Exceptions;
 using InsurancePolicyApi.Repositories;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,7 +19,8 @@ namespace InsurancePolicyApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             //builder.Services.AddOpenApi();
@@ -140,7 +142,6 @@ namespace InsurancePolicyApi
 
             builder.Services.AddAuthorization();
             var app = builder.Build();
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -149,6 +150,7 @@ namespace InsurancePolicyApi
                 app.UseSwaggerUI();
             }
 
+            app.UseExceptionHandler();
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

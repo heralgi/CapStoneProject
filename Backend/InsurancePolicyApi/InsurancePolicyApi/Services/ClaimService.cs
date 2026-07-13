@@ -1,4 +1,5 @@
 ﻿using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.DTOs.Common;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Repositories;
@@ -125,15 +126,17 @@ namespace InsurancePolicyApi.Services
         }
 
 
-        public async Task<IEnumerable<ClaimResponse>> GetClaimsAsync()
+        public async Task<PagedResponse<ClaimResponse>> GetClaimsAsync(PageQuery pagequery)
         {
-            var claimList = await _claimRepository.GetClaimsAsync();
-            var claims = new List<ClaimResponse>();
+            var claimList = await _claimRepository.GetClaimsAsync(pagequery);
+
+            /*var claims = new List<ClaimResponse>();
             foreach (Entities.Claim claim in claimList)
             {
                 claims.Add(GetClaimResponse(claim));
             }
-            return claims;
+            return claims;*/
+            return claimList;
         }
 
         ClaimResponse GetClaimResponse(Entities.Claim claim)
