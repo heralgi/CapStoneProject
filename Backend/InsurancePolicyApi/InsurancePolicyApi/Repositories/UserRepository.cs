@@ -1,4 +1,6 @@
 using InsurancePolicyApi.Data;
+using InsurancePolicyApi.DTOs.Claim;
+using InsurancePolicyApi.DTOs.Common;
 using InsurancePolicyApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +15,25 @@ namespace InsurancePolicyApi.Repositories
             _ctx = ctx;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<PagedResponse<User>> GetAllAsync(PageQuery pagequery)
         {
-            return await _ctx.Users
+            var query = _ctx.Users.AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(x => x.Id)
+                .Skip((pagequery.PageNumber - 1) * pagequery.PageSize)
+                .Take(pagequery.PageSize)
                 .ToListAsync();
+            return new PagedResponse<User>
+            {
+                Records = items,
+                CurrentPage = pagequery.PageNumber,
+                PageSize = pagequery.PageSize,
+                TotalRecords = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pagequery.PageSize)
+            };
         }
 
         public async Task<User?> GetByIdAsync(int id)

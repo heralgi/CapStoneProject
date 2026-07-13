@@ -2,6 +2,7 @@
 
 namespace InsurancePolicyApi.Controllers
 {
+    using InsurancePolicyApi.DTOs.Common;
     using InsurancePolicyApi.Entities;
     using InsurancePolicyApi.Services;
     using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,9 @@ namespace InsurancePolicyApi.Controllers
 
         // GET: api/customers
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PageQuery pq)
         {
-            var customers = await _customerService.GetAllAsync();
+            var customers = await _customerService.GetAllAsync(pq);
 
             return Ok(customers);
         }

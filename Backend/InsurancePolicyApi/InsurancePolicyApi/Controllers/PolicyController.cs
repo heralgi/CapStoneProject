@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.DTOs.Policy;
+﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.DTOs.Policy;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -21,10 +22,10 @@ namespace InsurancePolicyApi.Controllers
         // GET: api/policies
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetPolicies()
+        public async Task<IActionResult> GetPolicies([FromQuery] PageQuery pq)
         {
             int userId = int.Parse(User.FindFirst("userid")!.Value);
-            return Ok(await _service.GetPoliciesAsync(userId));
+            return Ok(await _service.GetPoliciesAsync(userId, pq));
         }
 
         // GET: api/policies/POL12345

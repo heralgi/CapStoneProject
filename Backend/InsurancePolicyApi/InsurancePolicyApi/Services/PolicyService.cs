@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.DTOs.Policy;
+﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.DTOs.Policy;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Repositories;
@@ -142,10 +143,14 @@ namespace InsurancePolicyApi.Services
             return listresDto;
         }
 
-        public async Task<IEnumerable<PolicyResponse>> GetPoliciesAsync(int userId)
+        public async Task<PagedResponse<Policy>> GetPoliciesAsync(int userId, PageQuery pq)
         {
-            var policies = await _policyRepository.GetPoliciesAsync(userId);
-            var policyResponses = new List<PolicyResponse>();
+            var policies = await _policyRepository.GetPoliciesAsync(userId, pq);
+            return policies;
+
+
+
+            /*var policyResponses = new List<PolicyResponse>();
             foreach(Policy policy in policies)
             {
                 policyResponses.Add(new PolicyResponse()
@@ -164,7 +169,7 @@ namespace InsurancePolicyApi.Services
                 });
             }
 
-            return policyResponses;
+            return policyResponses;*/
         }
     }
 }

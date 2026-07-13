@@ -1,4 +1,5 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +21,9 @@ namespace InsurancePolicyApi.Controllers
         // GET: api/users
         [Authorize(Roles=nameof(UserRole.Admin))]
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery]PageQuery pq)
         {
-            var users = await _userService.GetAllAsync();
+            var users = await _userService.GetAllAsync(pq);
 
             return Ok(users);
         }
@@ -58,7 +59,7 @@ namespace InsurancePolicyApi.Controllers
         [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> Create(User user)
         {
-            var createdUser = await _userService.CreateAsync(user);
+            var createdUser = await _userService.CreateAdminORInternalStaffAsync(user);
 
             return CreatedAtAction(
                 nameof(GetById),

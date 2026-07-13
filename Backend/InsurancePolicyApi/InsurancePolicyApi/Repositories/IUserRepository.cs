@@ -1,5 +1,6 @@
 ﻿
 
+using InsurancePolicyApi.DTOs.Common;
 using InsurancePolicyApi.Entities;
 
 namespace InsurancePolicyApi.Repositories
@@ -12,7 +13,7 @@ namespace InsurancePolicyApi.Repositories
         public Task<User> Update(int id, User user);
         public Task<bool> Delete(int id);*/
 
-        Task<IEnumerable<User>> GetAllAsync();
+        Task<PagedResponse<User>> GetAllAsync(PageQuery pq);
 
         Task<User?> GetByIdAsync(int id);
 

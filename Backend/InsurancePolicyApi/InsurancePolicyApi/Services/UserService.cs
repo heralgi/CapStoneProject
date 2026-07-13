@@ -1,4 +1,6 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Repositories;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,9 +17,9 @@ namespace InsurancePolicyApi.Services
             _passwordHasher = new PasswordHasher<User>();
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<PagedResponse<User>> GetAllAsync(PageQuery pq)
         {
-            return await _userRepository.GetAllAsync();
+            return await _userRepository.GetAllAsync(pq);
         }
 
         public async Task<User?> GetByIdAsync(int id)
@@ -41,6 +43,21 @@ namespace InsurancePolicyApi.Services
 
             user.IsActive = true;
             user.PasswordHash = _passwordHasher.HashPassword(user, user.PasswordHash);
+
+            return await _userRepository.CreateAsync(user);
+        }
+
+        public async Task<User?> CreateAdminORInternalStaffAsync(User user)
+        {
+            if(user.Role == UserRole.Customer)
+            {
+                throw new Exception("Admin cannot create Customer.");
+            }
+
+            var existingUser = await _userRepository.GetByEmailAsync(user.Email);
+
+            if (existingUser != null)
+                throw new Exception("Email already exists.");
 
             return await _userRepository.CreateAsync(user);
         }

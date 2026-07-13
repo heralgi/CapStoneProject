@@ -1,10 +1,11 @@
-﻿using InsurancePolicyApi.Entities;
+﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.Entities;
 
 namespace InsurancePolicyApi.Services
 {
     public interface ICustomerService
     {
-        Task<IEnumerable<Customer>> GetAllAsync();
+        Task<PagedResponse<Customer>> GetAllAsync(PageQuery pq);
 
         Task<Customer?> GetByIdAsync(int id);
 
