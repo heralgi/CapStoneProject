@@ -17,7 +17,17 @@ namespace InsurancePolicyApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            // Add CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
             // Add services to the container.
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
@@ -151,7 +161,10 @@ namespace InsurancePolicyApi
             }
 
             app.UseExceptionHandler();
+
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowAngular");
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -1,0 +1,213 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+
+    <div class="w-100" style="max-width: 500px;">
+
+        <form [formGroup]="registerForm" (ngSubmit)="register()" class="text-center">
+
+            <h1 class="h3 mb-4 fw-normal">
+                Insurance Policy App
+            </h1>
+
+            <h4 class="mb-4">Register</h4>
+
+            <!-- Full Name -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="fullName"
+                    placeholder="Full Name"
+                    formControlName="fullName">
+
+                <label for="fullName">Full Name</label>
+
+                @if(registerForm.controls.fullName.touched &&
+                registerForm.controls.fullName.invalid){
+
+                    <div class="text-danger mt-1 text-start">
+                        @if(registerForm.controls.fullName.errors?.['required']){
+                            Full Name is required
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Email -->
+            <div class="form-floating mb-3">
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="Email"
+                    formControlName="email">
+
+                <label for="email">Email Address</label>
+
+                @if(registerForm.controls.email.touched &&
+                registerForm.controls.email.invalid){
+
+                    <div class="text-danger mt-1 text-start">
+
+                        @if(registerForm.controls.email.errors?.['required']){
+                            Email is required
+                        }
+
+                        @if(registerForm.controls.email.errors?.['email']){
+                            Invalid email format
+                        }
+
+                    </div>
+                }
+            </div>
+
+            <!-- Password -->
+            <div class="form-floating mb-3">
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Password"
+                    formControlName="password">
+
+                <label for="password">Password</label>
+
+                @if(registerForm.controls.password.touched &&
+                registerForm.controls.password.invalid){
+
+                    <div class="text-danger mt-1 text-start">
+                        Password is required
+                    </div>
+
+                }
+            </div>
+
+            <!-- Mobile -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="mobileNumber"
+                    placeholder="Mobile Number"
+                    formControlName="mobileNumber">
+
+                <label for="mobileNumber">Mobile Number</label>
+
+                @if(registerForm.controls.mobileNumber.touched &&
+                registerForm.controls.mobileNumber.invalid){
+
+                    <div class="text-danger mt-1 text-start">
+
+                        @if(registerForm.controls.mobileNumber.errors?.['required']){
+                            Mobile Number is required
+                        }
+
+                    </div>
+
+                }
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="form-floating mb-3">
+                <input
+                    type="date"
+                    class="form-control"
+                    id="dateOfBirth"
+                    formControlName="dateOfBirth">
+
+                <label for="dateOfBirth">Date of Birth</label>
+            </div>
+
+            <!-- Address -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    placeholder="Address"
+                    formControlName="address">
+
+                <label for="address">Address</label>
+            </div>
+
+            <!-- City -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    placeholder="City"
+                    formControlName="city">
+
+                <label for="city">City</label>
+            </div>
+
+            <!-- State -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="state"
+                    placeholder="State"
+                    formControlName="state">
+
+                <label for="state">State</label>
+            </div>
+
+            <!-- Pin Code -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="pinCode"
+                    placeholder="Pin Code"
+                    formControlName="pinCode">
+
+                <label for="pinCode">Pin Code</label>
+            </div>
+
+            <!-- Nominee Name -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="nomineeName"
+                    placeholder="Nominee Name"
+                    formControlName="nomineeName">
+
+                <label for="nomineeName">Nominee Name</label>
+            </div>
+
+            <!-- Nominee Relation -->
+            <div class="form-floating mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="nomineeRelation"
+                    placeholder="Nominee Relation"
+                    formControlName="nomineeRelation">
+
+                <label for="nomineeRelation">Nominee Relation</label>
+            </div>
+
+            <div class="text-danger mb-3">
+                {{ errorMessage }}
+            </div>
+
+            <button
+                type="submit"
+                class="w-100 btn btn-lg btn-dark"
+                [disabled]="registerForm.invalid">
+
+                Register
+
+            </button>
+
+            <p class="mt-5 mb-3 text-muted">
+                © 2026 Insurance Policy App
+            </p>
+
+        </form>
+
+    </div>
+
+</div>

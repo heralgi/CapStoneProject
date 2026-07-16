@@ -1,0 +1,97 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+
+    <div class="w-100" style="max-width: 400px;">
+
+        <form [formGroup]="loginForm" (ngSubmit)="login()" class="text-center">
+
+            <h1 class="h3 mb-4 fw-normal">
+                Insurance Policy App
+            </h1>
+
+            <h4 class="mb-4">Sign In</h4>
+
+            <!-- Email -->
+            <div class="form-floating mb-3">
+
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="name@example.com"
+                    formControlName="email">
+
+                <label for="email">Email Address</label>
+
+                @if(loginForm.controls.email.touched &&
+                loginForm.controls.email.invalid){
+
+                    <div class="text-danger text-start mt-1">
+
+                        @if(loginForm.controls.email.errors?.['required']){
+                            Email is required
+                        }
+
+                        @if(loginForm.controls.email.errors?.['email']){
+                            Invalid email format
+                        }
+
+                    </div>
+
+                }
+
+            </div>
+
+            <!-- Password -->
+            <div class="form-floating mb-3">
+
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Password"
+                    formControlName="password">
+
+                <label for="password">Password</label>
+
+                @if(loginForm.controls.password.touched &&
+                loginForm.controls.password.invalid){
+
+                    <div class="text-danger text-start mt-1">
+                        Password is required
+                    </div>
+
+                }
+
+            </div>
+
+            <div class="text-danger mb-3">
+                {{ errorMessage }}
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-dark btn-lg w-100 mb-3"
+                [disabled]="loginForm.invalid">
+
+                Sign In
+
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-outline-secondary btn-lg w-100"
+                (click)="register()">
+
+                Create New Account
+
+            </button>
+
+            <p class="mt-5 mb-3 text-muted">
+                © 2026 Insurance Policy App
+            </p>
+
+        </form>
+
+    </div>
+
+</div>
