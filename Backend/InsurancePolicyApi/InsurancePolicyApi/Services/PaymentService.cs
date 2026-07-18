@@ -26,7 +26,7 @@ namespace InsurancePolicyApi.Services
                 throw new Exception("Policy not found.");
 
             if (policy.PolicyStatus != PolicyStatus.PendingPayment)
-                throw new Exception("Premium payment can only be made for active policies.");
+                throw new Exception("Premium payment can only be made for PendingPayment policies.");
 
             if (payment.Amount < 1)
                 throw new Exception("Amount must be greater than zero");

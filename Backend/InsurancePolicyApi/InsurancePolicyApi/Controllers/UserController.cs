@@ -1,4 +1,5 @@
 ﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.DTOs.User;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Services;
@@ -57,13 +58,13 @@ namespace InsurancePolicyApi.Controllers
         // POST: api/users
         [HttpPost]
         [Authorize(Roles = nameof(UserRole.Admin))]
-        public async Task<IActionResult> Create(User user)
+        public async Task<IActionResult> Create(CreateUserRequest user)
         {
             var createdUser = await _userService.CreateAdminORInternalStaffAsync(user);
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = createdUser.Id },
+                new { id = createdUser.UserId },
                 createdUser);
         }
 

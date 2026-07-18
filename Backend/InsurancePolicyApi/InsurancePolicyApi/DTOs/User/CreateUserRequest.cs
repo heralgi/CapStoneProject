@@ -1,12 +1,9 @@
+﻿using InsurancePolicyApi.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace InsurancePolicyApi.DTOs.User
 {
-    /// <summary>
-    /// Admin-only creation of an agent account (§12.2 FR-USER-004, ASM-004).
-    /// The Agent role is assigned by the service, not supplied by the client.
-    /// </summary>
-    public class CreateAgentRequest
+    public class CreateUserRequest
     {
         [Required]
         [StringLength(150, MinimumLength = 2)]
@@ -30,5 +27,7 @@ namespace InsurancePolicyApi.DTOs.User
         [Phone]
         [StringLength(20)]
         public string MobileNumber { get; set; } = null!;
+
+        public UserRole Role { get; set; }
     }
 }

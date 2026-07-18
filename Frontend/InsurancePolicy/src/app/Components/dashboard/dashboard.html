@@ -6,7 +6,7 @@
     </a>
 
     <!-- Navigation -->
-    <ul class="nav nav-pills ms-auto">
+    <ul class="nav nav-pills ms-auto align-items-center">
 
         <li class="nav-item">
             <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#home">
@@ -35,6 +35,15 @@
         <li class="nav-item">
             <button class="nav-link" data-bs-toggle="pill" data-bs-target="#profile">
                 Profile
+            </button>
+        </li>
+
+        <!-- Logout -->
+        <li class="nav-item ms-3">
+            <button
+                class="btn btn-outline-light"
+                (click)="logout()">
+                Logout
             </button>
         </li>
 

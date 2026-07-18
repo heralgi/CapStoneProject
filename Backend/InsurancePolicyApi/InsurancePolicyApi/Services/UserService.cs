@@ -1,4 +1,6 @@
-﻿using InsurancePolicyApi.DTOs.Common;
+﻿using Azure.Core;
+using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.DTOs.User;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Repositories;
@@ -47,19 +49,30 @@ namespace InsurancePolicyApi.Services
             return await _userRepository.CreateAsync(user);
         }
 
-        public async Task<User?> CreateAdminORInternalStaffAsync(User user)
+        public async Task<UserResponse?> CreateAdminORInternalStaffAsync(CreateUserRequest request)
         {
-            if(user.Role == UserRole.Customer)
-            {
+            if (request.Role == UserRole.Customer)
                 throw new Exception("Admin cannot create Customer.");
-            }
 
-            var existingUser = await _userRepository.GetByEmailAsync(user.Email);
+            var existingUser = await _userRepository.GetByEmailAsync(request.Email);
 
             if (existingUser != null)
                 throw new Exception("Email already exists.");
 
-            return await _userRepository.CreateAsync(user);
+            var user = new User
+            {
+                FullName = request.FullName,
+                Email = request.Email,
+                MobileNumber = request.MobileNumber,
+                Role = request.Role,
+                IsActive = true
+            };
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+
+            var created = await _userRepository.CreateAsync(user);
+
+            return MapToResponse(created);
         }
 
         public async Task<User?> UpdateAsync(int id, User user)
@@ -100,6 +113,20 @@ namespace InsurancePolicyApi.Services
                 return true;
 
             return await _userRepository.DeactivateAsync(id);
+        }
+
+        private static UserResponse MapToResponse(User user)
+        {
+            return new UserResponse
+            {
+                UserId = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                MobileNumber = user.MobileNumber,
+                Role = user.Role.ToString(),
+                IsActive = user.IsActive,
+                CreatedDate = user.CreatedDate
+            };
         }
     }
 }

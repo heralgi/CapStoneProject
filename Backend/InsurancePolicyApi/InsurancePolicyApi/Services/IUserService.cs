@@ -1,4 +1,5 @@
 ﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.DTOs.User;
 using InsurancePolicyApi.Entities;
 
 namespace InsurancePolicyApi.Services
@@ -13,7 +14,7 @@ namespace InsurancePolicyApi.Services
 
         Task<User> CreateAsync(User user);
 
-        Task<User> CreateAdminORInternalStaffAsync(User user);
+        Task<UserResponse> CreateAdminORInternalStaffAsync(CreateUserRequest user);
 
         Task<User?> UpdateAsync(int id, User user);
 

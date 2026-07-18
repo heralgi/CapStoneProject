@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
+
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
@@ -11,50 +12,64 @@ import { Router } from '@angular/router';
   templateUrl: './login-page.html',
   styleUrls: ['./login-page.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   errorMessage = '';
+
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
-  private router = inject(Router)
-
-  constructor(
-    // private fb: FormBuilder,
-    // private authService: AuthService,
-    // private router: Router
-  ) {}
+  private readonly router = inject(Router);
 
   loginForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
   });
 
-  ngOnInit() {
+  ngOnInit(): void {
+
+    // If already logged in, go directly to dashboard
+    if (this.authService.isLoggedIn()) {
+
+      this.router.navigate(['/dashboard']);
+
+      return;
+
+    }
+
+    // Demo credentials
     this.loginForm.patchValue({
       email: 'admin@example.com',
       password: '1234'
     });
+
   }
 
-  login() {
+  login(): void {
 
     if (this.loginForm.invalid) {
+
       this.loginForm.markAllAsTouched();
+
       return;
+
     }
+
+    this.errorMessage = '';
 
     this.authService.login(this.loginForm.getRawValue()).subscribe({
 
-      next: (response) => {
+      next: () => {
 
-        localStorage.setItem('token', response.token);
-
+        // Token is already stored in AuthService
         this.router.navigate(['/dashboard']);
+
       },
 
       error: (err) => {
 
-        this.errorMessage = err.error.message ?? 'Invalid Email or Password';
+        this.errorMessage =
+          err.error?.message ??
+          'Invalid Email or Password';
 
       }
 
@@ -62,8 +77,10 @@ export class LoginComponent {
 
   }
 
-  register() {
+  register(): void {
+
     this.router.navigate(['/register']);
+
   }
 
 }

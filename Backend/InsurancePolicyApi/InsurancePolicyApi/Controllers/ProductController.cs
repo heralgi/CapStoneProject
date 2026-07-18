@@ -1,6 +1,8 @@
 ﻿using InsurancePolicyApi.DTOs.Product;
 using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InsurancePolicyApi.Controllers
@@ -17,6 +19,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // GET: api/insuranceproducts
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -26,6 +29,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // GET: api/insuranceproducts/5
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -38,6 +42,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // POST: api/insuranceproducts
+        [Authorize(Roles=nameof(UserRole.Admin))]
         [HttpPost]
         public async Task<IActionResult> Add(ProductRequest request)
         {
@@ -50,6 +55,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/insuranceproducts/5
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, InsuranceProduct product)
         {
@@ -62,6 +68,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/insuranceproducts/deactivate/5
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut("deactivate/{id:int}")]
         public async Task<IActionResult> Deactivate(int id)
         {
