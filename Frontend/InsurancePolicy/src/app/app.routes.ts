@@ -5,6 +5,9 @@ import { Dashboard } from './Components/dashboard/dashboard';
 
 import { authGuard } from './Guards/auth.guard';
 import { guestGuard } from './Guards/guest.guard';
+import { AdminDashboard } from './Components/admin.dashboard/admin.dashboard';
+import { InternalStaffDashboard } from './Components/internal-staff.dashboard/internal-staff.dashboard';
+import { roleGuard } from './Guards/role.guard';
 
 export const routes: Routes = [
 
@@ -21,10 +24,20 @@ export const routes: Routes = [
   },
 
   {
+    path: 'admin/dashboard',
+    component: AdminDashboard,
+    canActivate: [authGuard, roleGuard(['Admin'])]
+},
+{
+    path: 'staff/dashboard',
+    component: InternalStaffDashboard,
+    canActivate: [authGuard, roleGuard(['InternalStaff'])]
+},
+{
     path: 'dashboard',
     component: Dashboard,
-    canActivate: [authGuard]
-  },
+    canActivate: [authGuard, roleGuard(['Customer'])]
+},
 
   {
     path: '**',

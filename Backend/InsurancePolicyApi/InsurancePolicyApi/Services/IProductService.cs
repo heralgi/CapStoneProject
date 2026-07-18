@@ -5,15 +5,18 @@ namespace InsurancePolicyApi.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<InsuranceProduct>> GetAllAsync();
-        Task<IEnumerable<InsuranceProduct>> GetAllActiveAsync();
+        Task<IEnumerable<ProductResponse>> GetAllAsync();
+        Task<IEnumerable<ProductResponse>> GetAllActiveAsync();
 
-        Task<InsuranceProduct?> GetByIdAsync(int id);
+        Task<ProductResponse?> GetByIdAsync(int id);
 
-        Task<InsuranceProduct> AddAsync(ProductRequest request);
+        Task<ProductResponse> AddAsync(ProductRequest request);
 
-        Task<InsuranceProduct?> UpdateAsync(int id, InsuranceProduct product);
+        Task<ProductResponse?> UpdateAsync(int id, ProductRequest product);
 
         Task<bool> DeactivateAsync(int id);
+
+        Task<ProductResponse> MapToResponse(InsuranceProduct request);
+        Task<IEnumerable<ProductResponse>> MapToResponseList(IEnumerable<InsuranceProduct> requests);
     }
 }

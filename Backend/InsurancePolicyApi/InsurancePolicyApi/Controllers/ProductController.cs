@@ -50,14 +50,14 @@ namespace InsurancePolicyApi.Controllers
 
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = created.Id },
+                new { id = created.ProductId },
                 created);
         }
 
         // PUT: api/insuranceproducts/5
         [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, InsuranceProduct product)
+        public async Task<IActionResult> Update(int id, ProductRequest product)
         {
             var updated = await _service.UpdateAsync(id, product);
 

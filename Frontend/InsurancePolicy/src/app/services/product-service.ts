@@ -11,7 +11,7 @@ import { ProductRequest } from '../Models/Product';
 })
 export class ProductService {
 
-  private apiUrl = 'https://localhost:5001/api/InsuranceProducts';
+  private apiUrl = 'https://localhost:7083/api/InsuranceProducts';
 
   constructor(private http: HttpClient) { }
 

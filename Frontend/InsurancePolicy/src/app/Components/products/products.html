@@ -1,1 +1,81 @@
-<p>products works!</p>
+<select
+    class="form-select"
+    formControlName="productType">
+
+    <option [ngValue]="0">Health</option>
+
+    <option [ngValue]="1">Motor</option>
+
+    <option [ngValue]="2">Life</option>
+
+    <option [ngValue]="3">Travel</option>
+
+</select>
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Name</th>
+
+            <th>Type</th>
+
+            <th>Description</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr *ngFor="let p of products">
+
+            <td>{{p.productName}}</td>
+
+            <td>{{p.productType}}</td>
+
+            <td>{{p.description}}</td>
+
+            <td>
+
+                <span
+                    class="badge"
+                    [class.bg-success]="p.isActive"
+                    [class.bg-danger]="!p.isActive">
+
+                    {{p.isActive ? 'Active' : 'Inactive'}}
+
+                </span>
+
+            </td>
+
+            <td>
+
+                <button
+                    class="btn btn-primary btn-sm">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="btn btn-danger btn-sm ms-2"
+                    (click)="delete(p.productId)">
+
+                    Deactivate
+
+                </button>
+
+            </td>
+
+        </tr>
+
+    </tbody>
+
+</table>

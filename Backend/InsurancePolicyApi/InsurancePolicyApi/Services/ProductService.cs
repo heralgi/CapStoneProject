@@ -13,21 +13,21 @@ namespace InsurancePolicyApi.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<InsuranceProduct>> GetAllAsync()
+        public async Task<IEnumerable<ProductResponse>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            return await MapToResponseList(await _repository.GetAllAsync());
         }
-        public async Task<IEnumerable<InsuranceProduct>> GetAllActiveAsync()
+        public async Task<IEnumerable<ProductResponse>> GetAllActiveAsync()
         {
-            return await _repository.GetActiveAsync();
-        }
-
-        public async Task<InsuranceProduct?> GetByIdAsync(int id)
-        {
-            return await _repository.GetByIdAsync(id);
+            return await MapToResponseList(await _repository.GetActiveAsync());
         }
 
-        public async Task<InsuranceProduct> AddAsync(ProductRequest request)
+        public async Task<ProductResponse?> GetByIdAsync(int id)
+        {
+            return await MapToResponse(await _repository.GetByIdAsync(id));
+        }
+
+        public async Task<ProductResponse> AddAsync(ProductRequest request)
         {
             var exists = await _repository.ExistsByNameAsync(request.ProductName);
 
@@ -44,10 +44,10 @@ namespace InsurancePolicyApi.Services
                 UpdatedDate = DateTime.UtcNow
             };
 
-            return await _repository.AddAsync(product);
+            return await MapToResponse(await _repository.AddAsync(product));
         }
 
-        public async Task<InsuranceProduct?> UpdateAsync(int id, InsuranceProduct product)
+        public async Task<ProductResponse?> UpdateAsync(int id, ProductRequest product)
         {
             var existing = await _repository.GetByIdAsync(id);
 
@@ -58,7 +58,7 @@ namespace InsurancePolicyApi.Services
             existing.Description = product.Description;
             existing.ProductType = product.ProductType;
 
-            return await _repository.UpdateAsync(existing);
+            return await MapToResponse(await _repository.UpdateAsync(existing));
         }
 
         public async Task<bool> DeactivateAsync(int id)
@@ -72,6 +72,39 @@ namespace InsurancePolicyApi.Services
                 return true;
 
             return await _repository.DeactivateAsync(id);
+        }
+
+        public async Task<ProductResponse> MapToResponse(InsuranceProduct request)
+        {
+            var response = new ProductResponse()
+            {
+                ProductId = request.Id,
+                ProductName = request.ProductName,
+                ProductType = request.ProductType.ToString(),
+                Description = request.Description,
+                CreatedDate = request.CreatedDate,
+                UpdatedDate = request.UpdatedDate,
+                IsActive = request.IsActive
+            };
+            return response;
+        }
+        public async Task<IEnumerable<ProductResponse>> MapToResponseList(IEnumerable<InsuranceProduct> requests)
+        {
+            var responses = new List<ProductResponse>();
+            foreach(InsuranceProduct request in requests)
+            {
+                responses.Add(new ProductResponse()
+                {
+                    ProductId = request.Id,
+                    ProductName = request.ProductName,
+                    ProductType = request.ProductType.ToString(),
+                    Description = request.Description,
+                    CreatedDate = request.CreatedDate,
+                    UpdatedDate = request.UpdatedDate,
+                    IsActive = request.IsActive
+                });
+            }
+            return responses;
         }
     }
 }

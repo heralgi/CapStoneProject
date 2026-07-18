@@ -123,4 +123,47 @@ export class AuthService {
 
   }
 
+  getRole(): string |null {
+
+  const token = this.getToken();
+
+  if (!token)
+    return null;
+
+  try {
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+
+    return payload.role;
+
+  } catch {
+
+    return null;
+
+  }
+
+}
+
+getDashboardRoute(): string {
+
+  const role = this.getRole();
+
+  switch (role) {
+
+    case 'Admin':
+      return '/admin/dashboard';
+
+    case 'InternalStaff':
+      return '/staff/dashboard';
+
+    case 'Customer':
+      return '/customer/dashboard';
+
+    default:
+      return '/login';
+
+  }
+
+}
+
 }

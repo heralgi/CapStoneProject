@@ -30,7 +30,9 @@ export class LoginComponent implements OnInit {
     // If already logged in, go directly to dashboard
     if (this.authService.isLoggedIn()) {
 
-      this.router.navigate(['/dashboard']);
+      this.router.navigateByUrl(
+  this.authService.getDashboardRoute()
+);
 
       return;
 
@@ -61,7 +63,9 @@ export class LoginComponent implements OnInit {
       next: () => {
 
         // Token is already stored in AuthService
-        this.router.navigate(['/dashboard']);
+        this.router.navigateByUrl(
+  this.authService.getDashboardRoute()
+);
 
       },
 
