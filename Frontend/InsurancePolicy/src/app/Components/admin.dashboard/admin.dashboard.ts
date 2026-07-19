@@ -10,7 +10,9 @@ import { Router } from '@angular/router';
 })
 export class AdminDashboard {
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
+  readonly router = inject(Router);
+
+
 
   logout(): void {
 

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product-service';
 import { ProductResponse, ProductType } from '../../Models/Product';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -7,96 +7,159 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-products',
-  imports: [ CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './products.html',
-  styleUrl: './products.css',
+  styleUrls: ['./products.css']
 })
-export class Products {
+export class Products implements OnInit {
+
   products: ProductResponse[] = [];
+
+  productId = 0;
+
+  isEditMode = false;
+
+  ProductType = ProductType;
+
   private readonly router = inject(Router);
-  
   private readonly fb = inject(FormBuilder);
+
   form = this.fb.nonNullable.group({
 
     productName: ['', Validators.required],
 
-    productType: [ProductType.Health],
+    productType: [ProductType.Health, Validators.required],
 
     description: ['', Validators.required],
 
     isActive: [true]
 
-});
-
-constructor(private service: ProductService) {}
-
-ngOnInit(): void {
-
-  this.loadProducts();
-
-}
-
-loadProducts() {
-
-  this.service.getAll().subscribe({
-
-    next: data => {
-
-      this.products = data;
-
-    }
-
   });
 
-}
-delete(id: number) {
+  constructor(private service: ProductService) { }
 
-  if (!confirm("Deactivate Product?"))
-    return;
+  ngOnInit(): void {
 
-  this.service.deactivate(id).subscribe({
+    this.loadProducts();
 
-    next: () => {
+  }
 
-      this.loadProducts();
+  loadProducts(): void {
 
-    }
+    this.service.getAll().subscribe({
 
-  });
+      next: data => {
 
-}
-create() {
+        this.products = data;
 
-  if (this.form.invalid)
-    return;
+      },
 
-  this.service.add(this.form.getRawValue())
-      .subscribe({
+      error: err => console.error(err)
 
-          next: () => {
+    });
 
-              this.router.navigate(['/admin/products']);
+  }
 
-          }
+  create(): void {
 
-      });
-
-}
-update() {
-
-  if (this.form.invalid)
+    if (this.form.invalid)
       return;
 
-  this.service.update(this.productId, this.form.getRawValue())
-      .subscribe({
+    this.service.add(this.form.getRawValue()).subscribe({
 
-          next: () => {
+      next: () => {
 
-              this.router.navigate(['/admin/products']);
+        alert('Product added successfully.');
 
-          }
+        this.form.reset({
+          productName: '',
+          productType: ProductType.Health,
+          description: '',
+          isActive: true
+        });
 
-      });
+        this.loadProducts();
 
-}
+      },
+
+      error: err => console.error(err)
+
+    });
+
+  }
+
+  edit(product: ProductResponse): void {
+
+    this.isEditMode = true;
+
+    this.productId = product.productId;
+
+    this.form.patchValue({
+
+      productName: product.productName,
+
+      productType: ProductType[product.productType as keyof typeof ProductType],
+
+      description: product.description,
+
+      isActive: product.isActive
+
+    });
+
+  }
+
+  update(): void {
+
+    if (this.form.invalid)
+      return;
+
+    this.service.update(this.productId, this.form.getRawValue()).subscribe({
+
+      next: () => {
+
+        alert('Product updated successfully.');
+
+        this.isEditMode = false;
+
+        this.productId = 0;
+
+        this.form.reset({
+
+          productName: '',
+          productType: ProductType.Health,
+          description: '',
+          isActive: true
+
+        });
+
+        this.loadProducts();
+
+      },
+
+      error: err => console.error(err)
+
+    });
+
+  }
+
+  delete(id: number): void {
+
+    if (!confirm('Deactivate Product?'))
+      return;
+
+    this.service.deactivate(id).subscribe({
+
+      next: () => {
+
+        this.loadProducts();
+
+      },
+
+      error: err => console.error(err)
+
+    });
+
+  }
+
 }

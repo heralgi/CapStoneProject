@@ -1,13 +1,17 @@
 import { Routes } from '@angular/router';
 
-import { LoginComponent } from './Components/login-page/login-page';
+
 import { Dashboard } from './Components/dashboard/dashboard';
+import { AdminDashboard } from './Components/admin.dashboard/admin.dashboard';
+import { InternalStaffDashboard } from './Components/internal-staff.dashboard/internal-staff.dashboard';
 
 import { authGuard } from './Guards/auth.guard';
 import { guestGuard } from './Guards/guest.guard';
-import { AdminDashboard } from './Components/admin.dashboard/admin.dashboard';
-import { InternalStaffDashboard } from './Components/internal-staff.dashboard/internal-staff.dashboard';
 import { roleGuard } from './Guards/role.guard';
+
+import { LoginComponent } from './Components/login-page/login-page';
+import { Products } from './Components/products/products';
+
 
 export const routes: Routes = [
 
@@ -26,6 +30,11 @@ export const routes: Routes = [
   {
     path: 'admin/dashboard',
     component: AdminDashboard,
+    canActivate: [authGuard, roleGuard(['Admin'])]
+},
+{
+    path: 'admin/products',
+    component: Products,
     canActivate: [authGuard, roleGuard(['Admin'])]
 },
 {
