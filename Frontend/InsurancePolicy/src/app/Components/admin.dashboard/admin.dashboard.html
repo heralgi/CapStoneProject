@@ -9,37 +9,42 @@
     <ul class="nav nav-pills ms-auto align-items-center">
 
         <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#home">
-                Home
-            </button>
-        </li>
-
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#products">
+            <button
+                class="nav-link"
+                (click)="router.navigate(['/admin/dashboard/products'])"
+                routerLinkActive="activeLink">
                 Products
             </button>
         </li>
-        <button
-    class="nav-link"
-    (click)="router.navigate(['/admin/products'])">
-    Products
-</button>
 
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#policies">
+            <button class="nav-link"
+            (click)="router.navigate(['/admin/dashboard/plans'])"
+            routerLinkActive="activeLink">
+                Plans
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link"
+            (click)="router.navigate(['/admin/dashboard/policy'])"
+            routerLinkActive="activeLink">
                 Policies
             </button>
         </li>
 
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#claims">
+            <button class="nav-link"
+            (click)="router.navigate(['/admin/dashboard/claim'])"
+            routerLinkActive="activeLink">
                 Claims
             </button>
         </li>
 
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#profile">
-                Profile
+            <button class="nav-link"
+            (click)="router.navigate(['/admin/dashboard/user'])"
+            routerLinkActive="activeLink">
+                Users
             </button>
         </li>
 
@@ -55,3 +60,5 @@
     </ul>
 
 </nav>
+
+<router-outlet></router-outlet>

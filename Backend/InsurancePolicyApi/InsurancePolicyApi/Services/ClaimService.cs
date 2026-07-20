@@ -125,6 +125,12 @@ namespace InsurancePolicyApi.Services
             return claims;
         }
 
+        public async Task<IEnumerable<ClaimResponse>> GetAllClaimsAsync()
+        {
+            var claims = await _claimRepository.GetAllClaimsAsync();
+            return claims;
+        }
+
 
         public async Task<PagedResponse<ClaimResponse>> GetClaimsAsync(PageQuery pagequery)
         {

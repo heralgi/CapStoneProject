@@ -14,6 +14,7 @@ namespace InsurancePolicyApi.Repositories
         public Task<bool> Delete(int id);*/
 
         Task<PagedResponse<User>> GetAllAsync(PageQuery pq);
+        Task<IEnumerable<User>> GetAllAsync();
 
         Task<User?> GetByIdAsync(int id);
 

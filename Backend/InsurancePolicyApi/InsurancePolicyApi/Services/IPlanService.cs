@@ -9,7 +9,7 @@ namespace InsurancePolicyApi.Services
 
         Task<PlanResponse> AddAsync(PlanRequest plan);
 
-        Task<PolicyPlan?> UpdateAsync(int id, PolicyPlan plan);
+        Task<PolicyPlan?> UpdateAsync(int id, PlanRequest plan);
 
         Task<bool> DeactivateAsync(int id);
     }

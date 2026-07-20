@@ -3,6 +3,7 @@ using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Repositories;
 using System.Numerics;
+using System.Xml.Linq;
 
 namespace InsurancePolicyApi.Services
 {
@@ -32,6 +33,11 @@ namespace InsurancePolicyApi.Services
                     PlanId = element.Id,
                     PlanName = element.PlanName,
                     ProductId = element.InsuranceProductId,
+                    CoverageAmount = element.CoverageAmount,
+                    PremiumAmount = element.PremiumAmount,
+                    PremiumType = element.PremiumType,
+                    DurationYears = element.DurationYears,
+                    TermsAndConditions = element.TermsAndConditions,
                     IsActive = element.IsActive
                 });
             }
@@ -75,12 +81,17 @@ namespace InsurancePolicyApi.Services
                 PlanId = planRes.Id,
                 PlanName = planRes.PlanName,
                 ProductId = planRes.InsuranceProductId,
+                CoverageAmount = planRes.CoverageAmount,
+                PremiumAmount = planRes.PremiumAmount,
+                PremiumType = planRes.PremiumType,
+                DurationYears = planRes.DurationYears,
+                TermsAndConditions = planRes.TermsAndConditions,
                 IsActive = planRes.IsActive
             };
             return responseDto;
         }
 
-        public async Task<PolicyPlan?> UpdateAsync(int id, PolicyPlan plan)
+        public async Task<PolicyPlan?> UpdateAsync(int id, PlanRequest plan)
         {
             var existing = await _planRepository.GetByIdAsync(id);
 

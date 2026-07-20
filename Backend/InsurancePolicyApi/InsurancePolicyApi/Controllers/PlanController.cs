@@ -46,7 +46,7 @@ namespace InsurancePolicyApi.Controllers
         // PUT: api/policyplans/5
         [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, PolicyPlan plan)
+        public async Task<IActionResult> Update(int id, PlanRequest plan)
         {
             var updated = await _service.UpdateAsync(id, plan);
 

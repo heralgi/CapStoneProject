@@ -1,22 +1,23 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ProductService } from '../../services/product-service';
-import { ProductResponse, ProductType } from '../../Models/Product';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ProductResponse, ProductType, ProductRequest } from '../../Models/Product';
+import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './products.html',
   styleUrls: ['./products.css']
 })
 export class Products implements OnInit {
 
-  products: ProductResponse[] = [];
+  products = signal<ProductResponse[]>([]);
 
   productId = 0;
+  editingId: number | null = null;
 
   isEditMode = false;
 
@@ -51,7 +52,7 @@ export class Products implements OnInit {
 
       next: data => {
 
-        this.products = data;
+        this.products.set(data);
 
       },
 
@@ -66,6 +67,11 @@ export class Products implements OnInit {
     if (this.form.invalid)
       return;
 
+    if (this.isEditMode){
+      this.update();
+      return;
+    }
+      
     this.service.add(this.form.getRawValue()).subscribe({
 
       next: () => {
@@ -113,7 +119,7 @@ export class Products implements OnInit {
 
     if (this.form.invalid)
       return;
-
+    console.log(this.form.getRawValue());
     this.service.update(this.productId, this.form.getRawValue()).subscribe({
 
       next: () => {
@@ -157,6 +163,20 @@ export class Products implements OnInit {
       },
 
       error: err => console.error(err)
+
+    });
+
+  }
+  resetForm() {
+
+    this.editingId = null;
+
+    this.form.reset({
+
+      productName: '',
+      productType: 0,
+      description: '',
+      isActive: true
 
     });
 

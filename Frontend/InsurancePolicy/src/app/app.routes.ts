@@ -11,6 +11,10 @@ import { roleGuard } from './Guards/role.guard';
 
 import { LoginComponent } from './Components/login-page/login-page';
 import { Products } from './Components/products/products';
+import { Plan } from './Components/plan/plan';
+import { Policy } from './Components/policy/policy';
+import { Claim } from './Components/claim/claim';
+import { UserComponent } from './Components/user-component/user-component';
 
 
 export const routes: Routes = [
@@ -30,13 +34,21 @@ export const routes: Routes = [
   {
     path: 'admin/dashboard',
     component: AdminDashboard,
+    children: [
+        { path: '', redirectTo: 'products', pathMatch: 'full' },
+        { path: 'products', component: Products },
+        { path: 'plans', component: Plan },
+        { path: 'policy', component: Policy },
+        { path: 'claim', component: Claim},
+        { path: 'user', component: UserComponent},
+    ],
     canActivate: [authGuard, roleGuard(['Admin'])]
 },
-{
-    path: 'admin/products',
-    component: Products,
-    canActivate: [authGuard, roleGuard(['Admin'])]
-},
+// {
+//     path: 'admin/products',
+//     component: Products,
+//     canActivate: [authGuard, roleGuard(['Admin'])]
+// },
 {
     path: 'staff/dashboard',
     component: InternalStaffDashboard,

@@ -1,1 +1,42 @@
-<p>policy works!</p>
+<h3>Policy View</h3>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Policy ID</th>
+            <th>Policy Number</th>
+            <th>Customer Id</th>
+            <th>Plan Name</th>
+            <th>Coverage Amount</th>
+            <th>Premium Amount</th>
+            <th>Premium Type</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Policy Status</th>
+            <th>Aadhar Number</th>
+            <th>Vehicle Number</th>
+            <th>Total Premium Paid</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let p of policies()">
+            <td>{{p.policyId}}</td>
+            <td>{{p.policyNumber}}</td>
+            <td>{{p.customerId}}</td>
+            <td>{{p.planName}}</td>
+            <td>{{p.coverageAmount}}</td>
+            <td>{{p.premiumAmount}}</td>
+            <td>{{p.premiumType}}</td>
+            <td>{{p.startDate}}</td>
+            <td>{{p.endDate}}</td>
+            <td>{{p.policyStatus}}</td>
+            <td>{{p.aadharNumber}}</td>
+            <td>{{p.vehicleNumber}}</td>
+            <td>{{p.totalPremiumPaid}}</td>
+
+        </tr>
+
+    </tbody>
+
+</table>

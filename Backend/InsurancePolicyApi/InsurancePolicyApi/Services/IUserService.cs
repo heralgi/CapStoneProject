@@ -7,6 +7,7 @@ namespace InsurancePolicyApi.Services
     public interface IUserService
     {
         Task<PagedResponse<User>> GetAllAsync(PageQuery pq);
+        Task<IEnumerable<UserResponse>> GetAllAsync();
 
         Task<User?> GetByIdAsync(int id);
 

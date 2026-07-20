@@ -35,3 +35,4 @@ export class ProductService {
     return this.http.put(`${this.apiUrl}/deactivate/${id}`, {});
   }
 }
+

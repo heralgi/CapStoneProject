@@ -23,6 +23,10 @@ namespace InsurancePolicyApi.DTOs.Policy
 
         public string PolicyStatus { get; set; } = null!;
 
+        public string AadharNumber { get; set; }
+
+        public string VehicleNumber { get; set; }
+
         public decimal TotalPremiumPaid { get; set; }
     }
 }

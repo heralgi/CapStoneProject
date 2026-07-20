@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-admin.dashboard',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './admin.dashboard.html',
   styleUrl: './admin.dashboard.css',
 })

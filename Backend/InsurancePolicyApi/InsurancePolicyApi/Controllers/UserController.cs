@@ -29,6 +29,15 @@ namespace InsurancePolicyApi.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _userService.GetAllAsync();
+
+            return Ok(users);
+        }
+
         // GET: api/users/5
         [HttpGet("{id:int}")]
         [Authorize(Roles = nameof(UserRole.Admin))]

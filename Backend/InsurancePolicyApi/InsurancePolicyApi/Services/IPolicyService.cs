@@ -15,5 +15,7 @@ namespace InsurancePolicyApi.Services
         Task<IEnumerable<PolicyResponse>> GetByCustomerIdAsync(int customerId);
 
         Task<PagedResponse<Policy>> GetPoliciesAsync(int userId, PageQuery pq);
+
+        Task<IEnumerable<PolicyResponse>> GetAllPoliciesAsync();
     }
 }

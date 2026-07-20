@@ -1,0 +1,211 @@
+<h3>Policy Plan Management</h3>
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <h4>
+            {{ isEditMode ? 'Edit Plan' : 'Add Plan' }}
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <form
+            [formGroup]="form"
+            (ngSubmit)="isEditMode ? update() : create()">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Select Product</label>
+
+                    <select [(ngModel)]="selectedProduct"
+                    formControlName="productId">
+                        @for (product of Products(); track product.productId) {
+                          <option [ngValue]="product.productId">{{ product.productName }}</option>
+                        }
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label>Plan Name</label>
+
+                    <input
+                        class="form-control"
+                        formControlName="planName">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label>Coverage Amount</label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        formControlName="coverageAmount">
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <label>Premium Amount</label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        formControlName="premiumAmount">
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label>Premium Type</label>
+
+                    <select
+                        class="form-select"
+                        formControlName="premiumType">
+
+                        <option [ngValue]="0">
+                            OneTime
+                        </option>
+
+                        <option [ngValue]="1">
+                            Annual
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 mb-3">
+
+                    <label>Duration</label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        formControlName="durationYears">
+
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label>Terms & Conditions</label>
+
+                <textarea
+                    rows="3"
+                    class="form-control"
+                    formControlName="termsAndConditions">
+                </textarea>
+
+            </div>
+
+            <button
+                class="btn btn-success">
+
+                {{ isEditMode ? 'Update' : 'Add' }}
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+<br>
+
+<div class="col-md-6 mb-3">
+
+                    <label>Select Product</label>
+
+                    <select [(ngModel)]="selectedProduct1" (change)="onChange()">
+                        @for (product of Products(); track product.productId) {
+                          <option [ngValue]="product.productId">{{ product.productName }}</option>
+                        }
+                    </select>
+
+                </div>
+
+
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+
+            <th>Plan</th>
+
+            <th>Product</th>
+            <th>coverageAmount</th>
+            <th>premiumAmount</th>
+            <th>durationYears</th>
+            <th>PremiumType</th>
+            <th>Status</th>
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr *ngFor="let p of plans()">
+
+            <td>{{p.planName}}</td>
+
+            <td>{{p.productId}}</td>
+            <td>{{p.coverageAmount}}</td>
+            <td>{{p.premiumAmount}}</td>
+            <td>{{p.durationYears}}</td>
+            <td>{{p.premiumType}}</td>
+
+            <td>
+
+                <span
+                    class="badge"
+                    [class.bg-success]="p.isActive"
+                    [class.bg-danger]="!p.isActive">
+
+                    {{p.isActive ? 'Active' : 'Inactive'}}
+
+                </span>
+
+            </td>
+
+            <td>
+
+                <button
+                    class="btn btn-primary btn-sm"
+                    (click)="edit(p)">
+
+                    Edit
+
+                </button>
+
+                <button
+                    class="btn btn-danger btn-sm ms-2"
+                    (click)="deactivate(p.planId)">
+
+                    Deactivate
+
+                </button>
+
+            </td>
+
+        </tr>
+
+    </tbody>
+
+</table>

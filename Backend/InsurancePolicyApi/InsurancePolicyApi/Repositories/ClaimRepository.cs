@@ -88,6 +88,12 @@ namespace InsurancePolicyApi.Repositories
             return await _ctx.Claims.FindAsync(id);
         }
 
+        public async Task<IEnumerable<ClaimResponse>> GetAllClaimsAsync()
+        {
+            var claims = await _ctx.Claims.Include(p => p.Policy).ToListAsync();
+            return GetClaimResponses(claims);
+        }
+
         List<ClaimResponse> GetClaimResponses(List<Claim> claims)
         {
             List<ClaimResponse> claimresponses = new List<ClaimResponse>();
@@ -98,6 +104,7 @@ namespace InsurancePolicyApi.Repositories
                     ClaimId = claim.Id,
                     PolicyId = claim.PolicyId,
                     ClaimNumber = claim.ClaimNumber,
+                    PolicyNumber = claim.Policy.PolicyNumber,
                     ClaimAmount = claim.ClaimAmount,
                     ClaimReason = claim.ClaimReason,
                     ClaimStatus = claim.ClaimStatus.ToString(),

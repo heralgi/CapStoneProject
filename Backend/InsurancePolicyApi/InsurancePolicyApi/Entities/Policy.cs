@@ -27,6 +27,9 @@ namespace InsurancePolicyApi.Entities
         /// <summary>Total of successful premium payments (PAY-BR-004).</summary>
         public decimal TotalPremiumPaid { get; set; }
 
+        public string AadharNumber { get; set; }
+        public string VehicleNumber { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime UpdatedDate { get; set; }

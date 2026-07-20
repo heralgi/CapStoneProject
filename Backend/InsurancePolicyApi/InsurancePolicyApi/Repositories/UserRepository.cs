@@ -1,6 +1,7 @@
 using InsurancePolicyApi.Data;
 using InsurancePolicyApi.DTOs.Claim;
 using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.DTOs.User;
 using InsurancePolicyApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,12 @@ namespace InsurancePolicyApi.Repositories
                 TotalRecords = totalCount,
                 TotalPages = (int)Math.Ceiling(totalCount / (double)pagequery.PageSize)
             };
+        }
+
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            var users = await _ctx.Users.Include(c => c.Customer).ToListAsync();
+            return users;
         }
 
         public async Task<User?> GetByIdAsync(int id)

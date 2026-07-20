@@ -171,5 +171,35 @@ namespace InsurancePolicyApi.Services
 
             return policyResponses;*/
         }
+
+        public async Task<IEnumerable<PolicyResponse>> GetAllPoliciesAsync()
+        {
+            var policies = await _policyRepository.GetAllPoliciesAsync();
+            List<PolicyResponse> policyResponses = new List<PolicyResponse>();
+
+            foreach(Policy policy in policies)
+            {
+                policyResponses.Add(
+                    new PolicyResponse()
+                    {
+                        PolicyId = policy.Id,
+                        PolicyNumber = policy.PolicyNumber,
+                        CustomerId = policy.CustomerId,
+                        PlanName = policy.PolicyPlan.PlanName,
+                        CoverageAmount = policy.PolicyPlan.CoverageAmount,
+                        PremiumAmount = policy.PolicyPlan.PremiumAmount,
+                        PremiumType = policy.PolicyPlan.PremiumType.ToString(),
+                        StartDate = policy.StartDate,
+                        EndDate = policy.EndDate,
+                        PolicyStatus = policy.PolicyStatus.ToString(),
+                        AadharNumber = policy.AadharNumber,
+                        VehicleNumber = policy.VehicleNumber,
+                        TotalPremiumPaid = policy.TotalPremiumPaid
+                    }
+                );
+            }
+
+            return policyResponses;
+        }
     }
 }

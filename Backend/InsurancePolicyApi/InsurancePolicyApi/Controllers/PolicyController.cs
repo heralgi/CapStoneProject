@@ -1,6 +1,7 @@
 ﻿using InsurancePolicyApi.DTOs.Common;
 using InsurancePolicyApi.DTOs.Policy;
 using InsurancePolicyApi.Entities;
+using InsurancePolicyApi.Entities.Enums;
 using InsurancePolicyApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +29,16 @@ namespace InsurancePolicyApi.Controllers
             return Ok(await _service.GetPoliciesAsync(userId, pq));
         }
 
+        [HttpGet("getAll")]
+        [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
+        public async Task<IActionResult> GetAllPolicies()
+        {
+            return Ok(await _service.GetAllPoliciesAsync());
+        }
+
         // GET: api/policies/POL12345
         [HttpGet("{policyNumber}")]
+        [Authorize]
         public async Task<IActionResult> GetByPolicyNumber(string policyNumber)
         {
             var policy = await _service.GetByPolicyNumberAsync(policyNumber);
@@ -42,6 +51,7 @@ namespace InsurancePolicyApi.Controllers
 
         // GET: api/policies/customer/5
         [HttpGet("customer/{customerId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetByCustomerId(int customerId)
         {
             return Ok(await _service.GetByCustomerIdAsync(customerId));
@@ -49,6 +59,7 @@ namespace InsurancePolicyApi.Controllers
 
         // POST: api/policies/purchase
         [HttpPost("purchase")]
+        [Authorize]
         public async Task<IActionResult> PurchasePolicy(CustomerPolicyPurchaseRequest request)
         {
             int userId = int.Parse(User.FindFirst("userid")!.Value);
@@ -62,6 +73,7 @@ namespace InsurancePolicyApi.Controllers
 
         // PUT: api/policies/issue/5
         [HttpPut("issue/{policyId:int}")]
+        [Authorize]
         public async Task<IActionResult> IssuePolicy(int policyId)
         {
             var result = await _service.IssuePolicyAsync(policyId);

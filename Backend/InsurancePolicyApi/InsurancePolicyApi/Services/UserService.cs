@@ -23,6 +23,11 @@ namespace InsurancePolicyApi.Services
         {
             return await _userRepository.GetAllAsync(pq);
         }
+        public async Task<IEnumerable<UserResponse>> GetAllAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            return MapToResponseList(users);
+        }
 
         public async Task<User?> GetByIdAsync(int id)
         {
@@ -127,6 +132,26 @@ namespace InsurancePolicyApi.Services
                 IsActive = user.IsActive,
                 CreatedDate = user.CreatedDate
             };
+        }
+        private static IEnumerable<UserResponse> MapToResponseList(IEnumerable<User> users)
+        {
+            List<UserResponse> userResponses = new List<UserResponse>();
+            foreach(User user in users)
+            {
+                userResponses.Add(
+                        new UserResponse
+                        {
+                            UserId = user.Id,
+                            FullName = user.FullName,
+                            Email = user.Email,
+                            MobileNumber = user.MobileNumber,
+                            Role = user.Role.ToString(),
+                            IsActive = user.IsActive,
+                            CreatedDate = user.CreatedDate
+                        }
+                );
+            }
+            return userResponses;
         }
     }
 }

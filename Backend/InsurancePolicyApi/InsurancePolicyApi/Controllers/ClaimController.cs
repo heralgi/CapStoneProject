@@ -33,6 +33,13 @@ namespace InsurancePolicyApi.Controllers
             return Ok(await _service.GetClaimsAsync(userId));
         }
 
+        [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetClaims()
+        {
+            return Ok(await _service.GetAllClaimsAsync());
+        }
+
         // GET: api/claims/policy/5
         [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
         [HttpGet("policy/{policyId:int}")]

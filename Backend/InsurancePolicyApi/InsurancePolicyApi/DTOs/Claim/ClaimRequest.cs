@@ -25,8 +25,8 @@ namespace InsurancePolicyApi.DTOs.Claim
         public DateTime IncidentDate { get; set; }
 
         /// <summary>At least one supporting document reference is required (DOC-BR-001).</summary>
-        [Required]
-        [MinLength(1, ErrorMessage = "At least one supporting document is required.")]
-        public List<ClaimDocumentRequest> SupportingDocuments { get; set; } = new();
+        //[Required]
+        //[MinLength(1, ErrorMessage = "At least one supporting document is required.")]
+        //public List<ClaimDocumentRequest> SupportingDocuments { get; set; } = new();
     }
 }

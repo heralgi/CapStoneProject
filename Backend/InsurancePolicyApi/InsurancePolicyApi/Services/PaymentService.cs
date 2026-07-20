@@ -31,6 +31,9 @@ namespace InsurancePolicyApi.Services
             if (payment.Amount < 1)
                 throw new Exception("Amount must be greater than zero");
 
+            if (payment.Amount != policy.PolicyPlan.PremiumAmount)
+                throw new Exception("Amount must be equal to Premium");
+
             payment.PaymentDate = DateTime.UtcNow;
             payment.PaymentStatus = PaymentStatus.Success;
 
