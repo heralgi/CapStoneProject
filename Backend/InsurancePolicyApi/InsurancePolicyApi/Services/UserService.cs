@@ -80,7 +80,7 @@ namespace InsurancePolicyApi.Services
             return MapToResponse(created);
         }
 
-        public async Task<User?> UpdateAsync(int id, User user)
+        public async Task<UserResponse?> UpdateAsync(int id, UpdateUserRequest user)
         {
             var existingUser = await _userRepository.GetByIdAsync(id);
 
@@ -88,10 +88,11 @@ namespace InsurancePolicyApi.Services
                 return null;
 
             existingUser.FullName = user.FullName;
-            existingUser.Email = user.Email;
+            existingUser.MobileNumber = user.MobileNumber;
             existingUser.Role = user.Role;
 
-            return await _userRepository.UpdateAsync(existingUser);
+            var userResponse = await _userRepository.UpdateAsync(existingUser);
+            return MapToResponse(userResponse);
         }
 
         public async Task<bool> ActivateAsync(int id)

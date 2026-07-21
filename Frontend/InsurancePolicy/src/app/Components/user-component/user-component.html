@@ -1,6 +1,6 @@
 <h3>User Management</h3>
 <div class="container mt-4">
-    <div class="card shadow">
+    <div class="card">
         <div class="card-header bg-dark text-white">
             <h4 class="mb-0">Create User</h4>
         </div>
@@ -39,7 +39,7 @@
                     }
 
                 </div>
-
+                
                 <!-- Email -->
                 <div class="mb-3">
                     <label class="form-label">Email</label>
@@ -174,13 +174,13 @@
                         class="btn btn-primary"
                         [disabled]="userForm.invalid">
 
-                        Create User
+                        {{isEditMode() ? 'Update User' : 'Create User'}}
 
                     </button>
 
                     <button
                         type="reset"
-                        class="btn btn-secondary">
+                        class="btn btn-secondary" (click)="reset()">
 
                         Reset
 
@@ -193,9 +193,12 @@
         </div>
     </div>
 </div>
-<table class="table table-bordered">
+<br>
 
-    <thead>
+<div class="p-3 bg-white rounded shadow-lg">
+<table class="table table-bordered mb-0">
+
+    <thead class="table-dark">
         <tr>
             <th>Full Name</th>
             <th>Email</th>
@@ -203,6 +206,7 @@
             <th>Role</th>
             <th>IsActive</th>
             <th>Created Date</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -213,6 +217,18 @@
             <td>{{u.role}}</td>
             <td>{{u.isActive}}</td>
             <td>{{u.createdDate}}</td>
+            <td>
+                <button class="btn btn-primary" (click)="edit(u)">
+                    Edit
+                </button>
+                <button class="btn btn-danger" (click)="deactivate(u.userId)">
+                    Deactivate
+                </button>
+                <button class="btn btn-success" (click)="deactivate(u.userId)">
+                    Activate
+                </button>
+            </td>
     </tbody>
 
 </table>
+</div>

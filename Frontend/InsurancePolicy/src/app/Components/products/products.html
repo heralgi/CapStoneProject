@@ -1,7 +1,7 @@
 <h3>Product Management</h3>
-
-<div class="card-header">
-        <h4>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h4>
+<div class="container mt-4">
+<div class="card-header bg-dark text-white">
+        <h4 class="mb-0">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h4>
     </div>
 
     <div class="card-body">
@@ -84,7 +84,7 @@
         </form>
 
     </div>
-
+</div>
 
 <select class="form-select" [(ngModel)]="ProductType">
     <option [ngValue]="0">Health</option>
@@ -93,9 +93,9 @@
     <option [ngValue]="3">Travel</option>
 </select>
 
-<table class="table table-bordered">
+<table class="table table-bordered ">
 
-    <thead>
+    <thead class="table-dark">
 
         <tr>
             <th>ID</th>
@@ -139,22 +139,16 @@
             </td>
 
             <td>
-
                 <button
                     class="btn btn-primary btn-sm"
                     (click)="edit(p)">
                     Edit
-
                 </button>
-
                 <button
                     class="btn btn-danger btn-sm ms-2"
                     (click)="delete(p.productId)">
-
                     Deactivate
-
                 </button>
-
             </td>
 
         </tr>

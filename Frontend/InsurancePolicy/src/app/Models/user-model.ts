@@ -21,3 +21,9 @@ export enum UserRole {
   InternalStaff = 1,
   Customer = 2
 }
+
+export interface UpdateUserRequest {
+  fullName: string;
+  mobileNumber: string;
+  role: UserRole;
+}

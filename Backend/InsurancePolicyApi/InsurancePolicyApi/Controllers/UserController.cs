@@ -80,7 +80,7 @@ namespace InsurancePolicyApi.Controllers
         // PUT: api/users/5
         [HttpPut("{id:int}")]
         [Authorize(Roles = nameof(UserRole.Admin))]
-        public async Task<IActionResult> Update(int id, User user)
+        public async Task<IActionResult> Update(int id, UpdateUserRequest user)
         {
             var updatedUser = await _userService.UpdateAsync(id, user);
 

@@ -57,6 +57,7 @@ namespace InsurancePolicyApi.Services
             existing.ProductName = product.ProductName;
             existing.Description = product.Description;
             existing.ProductType = product.ProductType;
+            existing.IsActive = product.IsActive;
 
             return await MapToResponse(await _repository.UpdateAsync(existing));
         }

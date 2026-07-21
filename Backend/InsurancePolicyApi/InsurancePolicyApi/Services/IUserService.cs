@@ -17,7 +17,7 @@ namespace InsurancePolicyApi.Services
 
         Task<UserResponse> CreateAdminORInternalStaffAsync(CreateUserRequest user);
 
-        Task<User?> UpdateAsync(int id, User user);
+        Task<UserResponse?> UpdateAsync(int id, UpdateUserRequest user);
 
         Task<bool> ActivateAsync(int id);
 
