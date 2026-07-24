@@ -90,7 +90,7 @@
                 @for (pay of paymentHistory(); track pay.paymentId) {
                   <tr>
                     <td><strong>{{ pay.policyNumber }}</strong></td>
-                    <td>{{ pay.amount | currency }}</td>
+                    <td>{{ pay.amount }}</td>
                     <td>{{ pay.paymentMode }}</td>
                     <td><code>{{ pay.transactionReference }}</code></td>
                     <td>

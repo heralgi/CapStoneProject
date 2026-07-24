@@ -52,8 +52,8 @@ namespace InsurancePolicyApi.Services
             if (product == null)
                 throw new Exception("Insurance Product does not exist.");
 
-            if (!product.IsActive)
-                throw new Exception("Cannot add a plan to an inactive insurance product.");
+            //if (product.IsActive)
+            //    throw new Exception("Cannot add a plan to an inactive insurance product.");
             if (plan.CoverageAmount <= plan.PremiumAmount)
             {
                 throw new Exception("Coverage amount must be higher than premium amount.");
