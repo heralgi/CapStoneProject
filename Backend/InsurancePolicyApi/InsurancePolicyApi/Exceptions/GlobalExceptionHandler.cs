@@ -20,7 +20,12 @@ namespace InsurancePolicyApi.Exceptions
                 _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
             };
 
-            var problemDetails = new ProblemDetails { Status = statusCode, Title = title, Instance = httpContext.Request.Path };
+            var problemDetails = new ProblemDetails { 
+                Status = statusCode, 
+                Title = title, 
+                Instance = httpContext.Request.Path, 
+                Detail = exception.Message
+            };
             httpContext.Response.StatusCode = statusCode;
             await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 

@@ -35,19 +35,50 @@ namespace InsurancePolicyApi.Services
                 throw new Exception("Policy plan not found.");
 
             if (!plan.IsActive)
-                throw new Exception("Policy plan is inactive.");
+                throw new Exception("Policy plan is inActive.");
 
-            var policy = new Policy
+            var policies = await _policyRepository.GetPoliciesAsync(userId);
+
+            // 1. Check if the customer already has a policy with this PlanId
+            if (policies.Any(p => p.PolicyPlanId == request.PlanId && 
+                    (p.PolicyStatus == PolicyStatus.PendingPayment || p.PolicyStatus == PolicyStatus.Active))){
+                throw new Exception("Policy Plan Already Purchased.");
+            }
+            
+            var policy = new Policy();
+
+            if (plan.InsuranceProduct.ProductType == ProductType.Motor)
             {
-                CustomerId = customer.Id,
-                PolicyPlanId = request.PlanId,
-                PolicyNumber = GeneratePolicyNumber(),
-                PolicyStatus = PolicyStatus.PendingPayment,
-                StartDate = request.StartDate,
-                EndDate = request.StartDate.AddYears(plan.DurationYears), // adjust according to your entity
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow
-            };
+                policy = new Policy
+                {
+                    CustomerId = customer.Id,
+                    PolicyPlanId = request.PlanId,
+                    PolicyNumber = GeneratePolicyNumber(),
+                    PolicyStatus = PolicyStatus.PendingPayment,
+                    VehicleNumber = request.Identifier,
+                    AadharNumber = "-",
+                    StartDate = request.StartDate,
+                    EndDate = request.StartDate.AddYears(plan.DurationYears), // adjust according to your entity
+                    CreatedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow
+                };
+            }
+            else
+            {
+                policy = new Policy
+                {
+                    CustomerId = customer.Id,
+                    PolicyPlanId = request.PlanId,
+                    PolicyNumber = GeneratePolicyNumber(),
+                    PolicyStatus = PolicyStatus.PendingPayment,
+                    VehicleNumber = "-",
+                    AadharNumber = request.Identifier,
+                    StartDate = request.StartDate,
+                    EndDate = request.StartDate.AddYears(plan.DurationYears), // adjust according to your entity
+                    CreatedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow
+                };
+            }
 
             var response = await _policyRepository.PurchasePolicyAsync(policy);
             PolicyResponse resDto = new PolicyResponse()
@@ -170,6 +201,36 @@ namespace InsurancePolicyApi.Services
             }
 
             return policyResponses;*/
+        }
+
+        public async Task<IEnumerable<PolicyResponse>> GetPoliciesAsync(int userId)
+        {
+            var policies = await _policyRepository.GetPoliciesAsync(userId);
+            List<PolicyResponse> policyResponses = new List<PolicyResponse>();
+
+            foreach (Policy policy in policies)
+            {
+                policyResponses.Add(
+                    new PolicyResponse()
+                    {
+                        PolicyId = policy.Id,
+                        PolicyNumber = policy.PolicyNumber,
+                        CustomerId = policy.CustomerId,
+                        PlanName = policy.PolicyPlan.PlanName,
+                        CoverageAmount = policy.PolicyPlan.CoverageAmount,
+                        PremiumAmount = policy.PolicyPlan.PremiumAmount,
+                        PremiumType = policy.PolicyPlan.PremiumType.ToString(),
+                        StartDate = policy.StartDate,
+                        EndDate = policy.EndDate,
+                        PolicyStatus = policy.PolicyStatus.ToString(),
+                        AadharNumber = policy.AadharNumber,
+                        VehicleNumber = policy.VehicleNumber,
+                        TotalPremiumPaid = policy.TotalPremiumPaid
+                    }
+                );
+            }
+
+            return policyResponses;
         }
 
         public async Task<IEnumerable<PolicyResponse>> GetAllPoliciesAsync()

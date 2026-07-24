@@ -27,6 +27,7 @@ namespace InsurancePolicyApi.Controllers
 
         // GET: api/premiumpayments/policy/5
         [HttpGet("policy/{policyId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetPaymentsByPolicy(int policyId)
         {
             return Ok(await _service.GetPaymentsByPolicyAsync(policyId));
@@ -34,6 +35,7 @@ namespace InsurancePolicyApi.Controllers
 
         // POST: api/premiumpayments
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> RecordPayment(PaymentRequest payment)
         {
             var result = await _service.RecordPaymentAsync(payment);

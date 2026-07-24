@@ -2,10 +2,8 @@
 <table class="table table-bordered">
     <thead class="table-dark">
         <tr>
-            <th>Claim ID</th>
             <th>Claim Number</th>
             <th>Policy Number</th>
-            <th>Policy Id</th>
             <th>Claim Amount</th>
             <th>Claim Reason</th>
             <th>Incident Date</th>
@@ -16,10 +14,8 @@
     </thead>
     <tbody>
         <tr *ngFor="let p of claims()">
-            <td>{{p.claimId}}</td>
             <td>{{p.claimNumber}}</td>
             <td>{{p.policyNumber}}</td>
-            <td>{{p.policyId}}</td>
             <td>{{p.claimAmount}}</td>
             <td>{{p.claimReason}}</td>
             <td>{{p.incidentDate}}</td>

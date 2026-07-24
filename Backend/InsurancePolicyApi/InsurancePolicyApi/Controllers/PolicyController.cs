@@ -29,6 +29,14 @@ namespace InsurancePolicyApi.Controllers
             return Ok(await _service.GetPoliciesAsync(userId, pq));
         }
 
+        [HttpGet("by-user")]
+        [Authorize]
+        public async Task<IActionResult> GetPolicies()
+        {
+            int userId = int.Parse(User.FindFirst("userid")!.Value);
+            return Ok(await _service.GetPoliciesAsync(userId));
+        }
+
         [HttpGet("getAll")]
         [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
         public async Task<IActionResult> GetAllPolicies()

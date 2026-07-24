@@ -72,9 +72,25 @@ namespace InsurancePolicyApi.Services
             return await _paymentRepository.GetPaymentsByPolicyAsync(policyId);
         }
 
-        public async Task<IEnumerable<PremiumPayment>> GetPaymentHistoryAsync()
+        public async Task<IEnumerable<PaymentResponse>> GetPaymentHistoryAsync()
         {
-            return await _paymentRepository.GetPaymentHistoryAsync();
+            var payments = await _paymentRepository.GetPaymentHistoryAsync();
+            List<PaymentResponse> paymentResponses = new List<PaymentResponse>();
+
+            foreach(PremiumPayment payment in payments)
+            {
+                paymentResponses.Add(new PaymentResponse()
+                {
+                    PaymentId = payment.Id,
+                    PolicyNumber = payment.Policy.PolicyNumber,
+                    Amount = payment.Amount,
+                    PaymentDate = payment.PaymentDate,
+                    PaymentMode = payment.PaymentMode.ToString(),
+                    TransactionReference = payment.TransactionReference,
+                    PaymentStatus = payment.PaymentStatus.ToString()
+                });
+            }
+            return paymentResponses;
         }
     }
 }

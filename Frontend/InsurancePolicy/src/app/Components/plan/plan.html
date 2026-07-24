@@ -1,5 +1,5 @@
 <h3>Policy Plan Management</h3>
-
+@if(auth.getRole() == 'Admin'){
 <div class="container mt-4">
 
     <div class="card-header bg-dark text-white">
@@ -124,6 +124,7 @@
     </div>
 
 </div>
+}
 <br>
 
 <div class="col-md-6 mb-3">
@@ -146,15 +147,14 @@
         <tr>
 
             <th>Plan</th>
-
-            <th>Product</th>
-            <th>coverageAmount</th>
-            <th>premiumAmount</th>
-            <th>durationYears</th>
+            <th>coverage Amount</th>
+            <th>Premium Amount</th>
+            <th>Duration Years</th>
             <th>PremiumType</th>
             <th>Status</th>
+            @if(auth.getRole() == 'Admin'){
             <th>Action</th>
-
+            }
         </tr>
 
     </thead>
@@ -164,48 +164,32 @@
         <tr *ngFor="let p of plans()">
 
             <td>{{p.planName}}</td>
-
-            <td>{{p.productId}}</td>
             <td>{{p.coverageAmount}}</td>
             <td>{{p.premiumAmount}}</td>
             <td>{{p.durationYears}}</td>
-            <td>{{p.premiumType}}</td>
-
+            <td>{{premiumTypeLabels[p.premiumType]}}</td>
             <td>
-
                 <span
                     class="badge"
                     [class.bg-success]="p.isActive"
                     [class.bg-danger]="!p.isActive">
-
                     {{p.isActive ? 'Active' : 'Inactive'}}
-
                 </span>
-
             </td>
-
+            @if(auth.getRole() == 'Admin'){
             <td>
-
                 <button
                     class="btn btn-primary btn-sm"
                     (click)="edit(p)">
-
                     Edit
-
                 </button>
-
                 <button
                     class="btn btn-danger btn-sm ms-2"
                     (click)="deactivate(p.planId)">
-
                     Deactivate
-
                 </button>
-
             </td>
-
+        }
         </tr>
-
     </tbody>
-
 </table>

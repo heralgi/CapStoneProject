@@ -1,4 +1,4 @@
-namespace InsurancePolicyApi.DTOs.Policy
+ namespace InsurancePolicyApi.DTOs.Policy
 {
     /// <summary>Policy details returned to clients (§11.7).</summary>
     public class PolicyResponse

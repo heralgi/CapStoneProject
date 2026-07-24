@@ -9,6 +9,6 @@ namespace InsurancePolicyApi.Services
 
         Task<IEnumerable<PremiumPayment>> GetPaymentsByPolicyAsync(int policyId);
 
-        Task<IEnumerable<PremiumPayment>> GetPaymentHistoryAsync();
+        Task<IEnumerable<PaymentResponse>> GetPaymentHistoryAsync();
     }
 }

@@ -1,0 +1,53 @@
+@if(!toggleTable()){
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Plan</th>
+            <th>coverageAmount</th>
+            <th>premiumAmount</th>
+            <th>durationYears</th>
+            <th>PremiumType</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let p of plans()">
+            @if(p.isActive){
+            <td>{{p.planName}}</td>
+            <td>{{p.coverageAmount}}</td>
+            <td>{{p.premiumAmount}}</td>
+            <td>{{p.durationYears}}</td>
+            <td>{{ premiumTypeLabels[p.premiumType] }}</td>
+            <td>
+                <button
+                    class="btn btn-primary btn-sm"
+                    (click)="purchaseForm(p.planId)">
+                    Purchase
+                </button>
+            </td>
+        }
+        </tr>
+    </tbody>
+</table>
+}
+@if(toggleTable()){
+    <form [formGroup]="purchaseform" (ngSubmit)="purchase()">
+        <h3>Purchase Form</h3>
+        <label>Identifier (Enter Aadhar or Vehicle Number)</label>
+        <div class="text-danger small">
+
+            @if(purchaseform.controls.identifier.errors?.['required']){
+            <div>required.</div>
+            }
+
+            @if(purchaseform.controls.identifier.errors?.['pattern']){
+            <div>Enter a valid Aadhar or Vehicle Number.</div>
+            }
+
+        </div>
+        <input class="form-control" formControlName="identifier">
+
+        <button class="btn btn-primary" type="submit">Buy</button>
+        <button class="btn btn-secondary" type="button" (click)="toggle()">Cancel</button>
+    </form>
+}

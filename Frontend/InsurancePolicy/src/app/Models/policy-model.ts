@@ -32,6 +32,8 @@ export interface CustomerPolicyPurchaseRequest {
 
   planId: number;
 
+  identifier: string;
+
   startDate: string;
 
 }

@@ -9,31 +9,35 @@
     <ul class="nav nav-pills ms-auto align-items-center">
 
         <li class="nav-item">
-            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#home">
-                Home
-            </button>
-        </li>
-
-        <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#products">
+            <button
+                class="nav-link"
+                (click)="router.navigate(['/dashboard/products'])"
+                routerLinkActive="activeLink">
                 Browse Products
             </button>
         </li>
 
+        
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#policies">
+            <button class="nav-link"
+            (click)="router.navigate(['/dashboard/policy'])"
+            routerLinkActive="activeLink">
                 My Policies
             </button>
         </li>
 
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#claims">
+            <button class="nav-link"
+            (click)="router.navigate(['/dashboard/claim'])"
+            routerLinkActive="activeLink">
                 My Claims
             </button>
         </li>
 
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#profile">
+            <button class="nav-link"
+            (click)="router.navigate(['/dashboard/profile'])"
+            routerLinkActive="activeLink">
                 Profile
             </button>
         </li>
@@ -50,3 +54,5 @@
     </ul>
 
 </nav>
+
+<router-outlet></router-outlet>

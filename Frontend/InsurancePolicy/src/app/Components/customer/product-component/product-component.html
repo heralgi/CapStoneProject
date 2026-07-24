@@ -1,0 +1,58 @@
+<h3>Products</h3>
+
+<select class="form-select" [(ngModel)]="ProductType">
+    <option [ngValue]="0">Health</option>
+    <option [ngValue]="1">Motor</option>
+    <option [ngValue]="2">Life</option>
+    <option [ngValue]="3">Travel</option>
+</select>
+
+<table class="table table-bordered ">
+
+    <thead class="table-dark">
+
+        <tr>
+            <th>Name</th>
+
+            <th>Type</th>
+
+            <th>Description</th>
+
+            <th>Status</th>
+
+            <th>Plans</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+        
+        <tr *ngFor="let p of products()">
+            @if(p.isActive){
+            <td>{{p.productName}}</td>
+
+            <td>{{p.productType}}</td>
+
+            <td>{{p.description}}</td>
+
+            <td>
+
+                <span
+                    class="badge"
+                    [class.bg-success]="p.isActive"
+                    [class.bg-danger]="!p.isActive">
+                    {{p.isActive ? 'Active' : 'Inactive'}}
+                </span>
+            </td>
+            <td>
+                <button
+                    class="btn btn-primary btn-sm" 
+                    (click)="viewPlan(p.productId)">
+                    View
+                </button>
+            </td>
+        }
+        </tr>
+    </tbody>
+</table>

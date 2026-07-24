@@ -14,6 +14,9 @@ namespace InsurancePolicyApi.DTOs.Policy
         public int PlanId { get; set; }
 
         [Required]
+        public string Identifier { get; set; }
+
+        [Required]
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
     }

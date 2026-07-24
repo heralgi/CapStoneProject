@@ -23,6 +23,10 @@ export class PolicyService {
     return this.http.get<PolicyResponse[]>(`${this.apiUrl}/getAll`);
   }
 
+  getPoliciesByUserId(): Observable<PolicyResponse[]> {
+    return this.http.get<PolicyResponse[]>(`${this.apiUrl}/by-user`);
+  }
+
   /**
    * GET: api/policies/POL12345
    */

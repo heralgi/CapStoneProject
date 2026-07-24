@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product-service';
 import { ProductResponse } from '../../Models/Product';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-plan',
@@ -15,8 +16,9 @@ import { ProductResponse } from '../../Models/Product';
 })
 export class Plan implements OnInit {
    plans = signal<PlanResponse[]>([]);
-
    Products = signal<ProductResponse[]>([]);
+   auth = inject(AuthService);
+   premiumTypeLabels = ['One-Time', 'Annual'];
 
   isEditMode = false;
 
@@ -51,7 +53,7 @@ constructor(private service: PlanService, private proService: ProductService) { 
   ngOnInit(): void {
 
     this.loadPlans();
-
+console.log(this.auth.getRole());
   }
 
   loadPlans() {
