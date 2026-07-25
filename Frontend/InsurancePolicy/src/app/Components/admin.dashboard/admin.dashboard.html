@@ -1,64 +1,36 @@
-<nav class="navbar navbar-expand-lg bg-black fixed-top px-4 py-3">
-
-    <!-- Company Name -->
-    <a class="navbar-brand text-white fw-bold fs-4" href="#">
-        Insurance Policy App
-    </a>
-
-    <!-- Navigation -->
-    <ul class="nav nav-pills ms-auto align-items-center">
-
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Insurance Policy App</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav w-100 mb-2 mb-lg-0">
         <li class="nav-item">
-            <button
-                class="nav-link"
-                (click)="router.navigate(['/admin/dashboard/products'])"
-                routerLinkActive="activeLink">
-                Products
-            </button>
-        </li>
-
-        <li class="nav-item">
-            <button class="nav-link"
-            (click)="router.navigate(['/admin/dashboard/plans'])"
-            routerLinkActive="activeLink">
-                Plans
-            </button>
+          <a class="nav-link active" aria-current="page" href="/admin/dashboard/products">Products</a>
         </li>
         <li class="nav-item">
-            <button class="nav-link"
-            (click)="router.navigate(['/admin/dashboard/policy'])"
-            routerLinkActive="activeLink">
-                Policies
-            </button>
+          <a class="nav-link" href="/admin/dashboard/plans">Plans</a>
         </li>
-
         <li class="nav-item">
-            <button class="nav-link"
-            (click)="router.navigate(['/admin/dashboard/claim'])"
-            routerLinkActive="activeLink">
-                Claims
-            </button>
+          <a class="nav-link" href="/admin/dashboard/policy">Policies</a>
         </li>
-
         <li class="nav-item">
-            <button class="nav-link"
-            (click)="router.navigate(['/admin/dashboard/user'])"
-            routerLinkActive="activeLink">
-                Users
-            </button>
+          <a class="nav-link" href="/admin/dashboard/payment">Payments</a>
         </li>
-
-        <!-- Logout -->
-        <li class="nav-item ms-3">
-            <button
-                class="btn btn-outline-light"
-                (click)="logout()">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/dashboard/claim">Claims</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/dashboard/user">Users</a>
+        </li>
+        <li class="nav-item ms-auto">
+            <button class="nav-link" (click)="logout()">
                 Logout
             </button>
         </li>
-
-    </ul>
-
+      </ul>
+    </div>
+  </div>
 </nav>
-
 <router-outlet></router-outlet>

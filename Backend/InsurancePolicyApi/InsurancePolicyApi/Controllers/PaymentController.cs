@@ -42,5 +42,13 @@ namespace InsurancePolicyApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("by-policyNumber")]
+        public async Task<IActionResult> RecordPaymentPolicyNumber(PaymentRequestPolicyNumber payment)
+        {
+            var result = await _service.RecordPaymentPolicyNumberAsync(payment);
+
+            return Ok(result);
+        }
     }
 }

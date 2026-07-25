@@ -15,20 +15,20 @@ import { AuthService } from '../../services/auth';
   styleUrl: './plan.css',
 })
 export class Plan implements OnInit {
-   plans = signal<PlanResponse[]>([]);
-   Products = signal<ProductResponse[]>([]);
-   auth = inject(AuthService);
-   premiumTypeLabels = ['One-Time', 'Annual'];
+  plans = signal<PlanResponse[]>([]);
+  Products = signal<ProductResponse[]>([]);
+  auth = inject(AuthService);
+  premiumTypeLabels = ['One-Time', 'Annual'];
 
   isEditMode = false;
 
   editId = 0;
-private readonly router = inject(Router);
+  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
   selectedProduct: ProductResponse | undefined;
   selectedProduct1: number = 1;
-constructor(private service: PlanService, private proService: ProductService) { }
+  constructor(private service: PlanService, private proService: ProductService) { }
 
   form = this.fb.nonNullable.group({
 
@@ -53,7 +53,7 @@ constructor(private service: PlanService, private proService: ProductService) { 
   ngOnInit(): void {
 
     this.loadPlans();
-console.log(this.auth.getRole());
+    console.log(this.auth.getRole());
   }
 
   loadPlans() {
@@ -184,7 +184,7 @@ console.log(this.auth.getRole());
     });
 
   }
-  onChange(){
+  onChange() {
     this.service.getByProduct(this.selectedProduct1).subscribe({
 
       next: data => {

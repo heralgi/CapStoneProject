@@ -32,7 +32,7 @@
             <label class="form-label">Payment Mode</label>
             <select class="form-select" formControlName="paymentMode">
               @for (mode of paymentModes; track mode) {
-                <option [value]="mode">{{ paymentModes[mode] }}</option>
+                <option [value]="mode">{{ paymentModes[mode] }}</option> 
               }
             </select>
           </div>

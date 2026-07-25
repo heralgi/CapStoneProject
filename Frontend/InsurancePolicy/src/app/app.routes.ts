@@ -39,38 +39,39 @@ export const routes: Routes = [
     path: 'admin/dashboard',
     component: AdminDashboard,
     children: [
-        { path: '', redirectTo: 'products', pathMatch: 'full' },
-        { path: 'products', component: Products },
-        { path: 'plans', component: Plan },
-        { path: 'policy', component: Policy },
-        { path: 'claim', component: Claim},
-        { path: 'user', component: UserComponent},
+      { path: '', redirectTo: 'products', pathMatch: 'full' },
+      { path: 'products', component: Products },
+      { path: 'plans', component: Plan },
+      { path: 'policy', component: Policy },
+      { path: 'claim', component: Claim },
+      { path: 'payment', component: Payment },
+      { path: 'user', component: UserComponent },
     ],
     canActivate: [authGuard, roleGuard(['Admin'])]
-},
-{
+  },
+  {
     path: 'staff/dashboard',
     component: InternalStaffDashboard,
     children: [
-        { path: '', redirectTo: 'policy', pathMatch: 'full' },
-        { path: 'plans', component: Plan },
-        { path: 'policy', component: Policy },
-        { path: 'claim', component: Claim},
-        { path: 'payment', component: Payment},
+      { path: '', redirectTo: 'policy', pathMatch: 'full' },
+      { path: 'plans', component: Plan },
+      { path: 'policy', component: Policy },
+      { path: 'claim', component: Claim },
+      { path: 'payment', component: Payment },
     ],
     canActivate: [authGuard, roleGuard(['InternalStaff'])]
-},
-{
+  },
+  {
     path: 'dashboard',
     component: Dashboard,
     children: [
-      { path: '', redirectTo: 'products', pathMatch: 'full'},
-      { path: 'products', component: ProductComponent},
-      { path: 'plans/:id', component: PlanCustomer},
-      { path: 'policy', component: PolicyCustomer},
+      { path: '', redirectTo: 'products', pathMatch: 'full' },
+      { path: 'products', component: ProductComponent },
+      { path: 'plans/:id', component: PlanCustomer },
+      { path: 'policy', component: PolicyCustomer },
     ],
     canActivate: [authGuard, roleGuard(['Customer'])]
-},
+  },
 
   {
     path: '**',

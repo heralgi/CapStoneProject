@@ -7,6 +7,8 @@ namespace InsurancePolicyApi.Services
     {
         Task<PaymentResponse> RecordPaymentAsync(PaymentRequest payment);
 
+        Task<PaymentResponse> RecordPaymentPolicyNumberAsync(PaymentRequestPolicyNumber payment);
+
         Task<IEnumerable<PremiumPayment>> GetPaymentsByPolicyAsync(int policyId);
 
         Task<IEnumerable<PaymentResponse>> GetPaymentHistoryAsync();

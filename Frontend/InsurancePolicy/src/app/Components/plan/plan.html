@@ -1,195 +1,168 @@
-<h3>Policy Plan Management</h3>
-@if(auth.getRole() == 'Admin'){
-<div class="container mt-4">
-
-    <div class="card-header bg-dark text-white">
-
-        <h4 class="mb-0">
-            {{ isEditMode ? 'Edit Plan' : 'Add Plan' }}
-        </h4>
-
+<div class="container-fluid py-4">
+    <!-- Header Block -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2 class="h3 text-secondary mb-0">Policy Plan Management</h2>
     </div>
 
-    <div class="card-body">
+    <!-- Admin Operations Panel -->
+    @if (auth.getRole() === 'Admin') {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white py-3">
+                <h4 class="card-title h5 mb-0">
+                    {{ isEditMode ? 'Modify Existing Plan' : 'Create New Policy Plan' }}
+                </h4>
+            </div>
+            
+            <div class="card-body p-4">
+                <form [formGroup]="form" (ngSubmit)="isEditMode ? update() : create()" novalidate>
+                    <!-- Form Row 1 -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label for="productId" class="form-label fw-semibold">Product Classification</label>
+                            <select id="productId" class="form-select" formControlName="productId">
+                                <option [ngValue]="null" disabled>-- Select a Product --</option>
+                                @for (product of Products(); track product.productId) {
+                                    <option [ngValue]="product.productId">{{ product.productName }}</option>
+                                }
+                            </select>
+                        </div>
 
-        <form
-            [formGroup]="form"
-            (ngSubmit)="isEditMode ? update() : create()">
+                        <div class="col-md-4">
+                            <label for="planName" class="form-label fw-semibold">Plan Name</label>
+                            <input id="planName" type="text" class="form-control" formControlName="planName" placeholder="e.g., Gold Premium Shield">
+                        </div>
 
-            <div class="row">
+                        <div class="col-md-4">
+                            <label for="coverageAmount" class="form-label fw-semibold">Coverage Amount ($)</label>
+                            <input id="coverageAmount" type="number" class="form-control" formControlName="coverageAmount" placeholder="0.00">
+                        </div>
+                    </div>
 
-                <div class="col-md-6 mb-3">
+                    <!-- Form Row 2 -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label for="premiumAmount" class="form-label fw-semibold">Premium Amount ($)</label>
+                            <input id="premiumAmount" type="number" class="form-control" formControlName="premiumAmount" placeholder="0.00">
+                        </div>
 
-                    <label>Select Product</label>
+                        <div class="col-md-4">
+                            <label for="premiumType" class="form-label fw-semibold">Premium Frequency</label>
+                            <select id="premiumType" class="form-select" formControlName="premiumType">
+                                <option [ngValue]="0">One-Time</option>
+                                <option [ngValue]="1">Annual</option>
+                            </select>
+                        </div>
 
-                    <select [(ngModel)]="selectedProduct"
-                    formControlName="productId">
-                        @for (product of Products(); track product.productId) {
-                          <option [ngValue]="product.productId">{{ product.productName }}</option>
+                        <div class="col-md-4">
+                            <label for="durationYears" class="form-label fw-semibold">Duration (Years)</label>
+                            <input id="durationYears" type="number" class="form-control" formControlName="durationYears" placeholder="e.g., 5">
+                        </div>
+                    </div>
+
+                    <!-- Form Row 3 -->
+                    <div class="mb-4">
+                        <label for="termsAndConditions" class="form-label fw-semibold">Terms & Conditions</label>
+                        <textarea id="termsAndConditions" rows="4" class="form-control" formControlName="termsAndConditions" placeholder="Enter formal terms, liabilities, and policy definitions..."></textarea>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-end gap-2">
+                        @if (isEditMode) {
+                            <button type="button" class="btn btn-light border" (click)="form.reset()">Cancel</button>
                         }
-                    </select>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <label>Plan Name</label>
-
-                    <input
-                        class="form-control"
-                        formControlName="planName">
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <label>Coverage Amount</label>
-
-                    <input
-                        type="number"
-                        class="form-control"
-                        formControlName="coverageAmount">
-
-                </div>
-
+                        <button type="submit" class="btn btn-success px-4" [disabled]="form.invalid">
+                            {{ isEditMode ? 'Save Changes' : 'Register Plan' }}
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+    }
 
-            <div class="row">
-
-                <div class="col-md-4 mb-3">
-
-                    <label>Premium Amount</label>
-
-                    <input
-                        type="number"
-                        class="form-control"
-                        formControlName="premiumAmount">
-
+    <!-- Data Filter & Catalog View Grid -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light py-3">
+            <div class="row align-items-center g-2">
+                <div class="col-sm-6">
+                    <h5 class="mb-0 text-dark">Active Policy Directory</h5>
                 </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <label>Premium Type</label>
-
-                    <select
-                        class="form-select"
-                        formControlName="premiumType">
-
-                        <option [ngValue]="0">
-                            OneTime
-                        </option>
-
-                        <option [ngValue]="1">
-                            Annual
-                        </option>
-
-                    </select>
-
+                <div class="col-sm-6 col-md-4 ms-auto">
+                    <!-- Fixed: Form element wrapper for independent filtering -->
+                    <div class="input-group input-group-sm">
+                        <label class="input-group-text bg-white" for="filterProduct">Filter</label>
+                        <select id="filterProduct" class="form-select" [(ngModel)]="selectedProduct1" (change)="onChange()">
+                            <option [ngValue]="undefined">All Products</option>
+                            @for (product of Products(); track product.productId) {
+                                <option [ngValue]="product.productId">{{ product.productName }}</option>
+                            }
+                        </select>
+                    </div>
                 </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <label>Duration</label>
-
-                    <input
-                        type="number"
-                        class="form-control"
-                        formControlName="durationYears">
-
-                </div>
-
             </div>
+        </div>
 
-            <div class="mb-3">
-
-                <label>Terms & Conditions</label>
-
-                <textarea
-                    rows="3"
-                    class="form-control"
-                    formControlName="termsAndConditions">
-                </textarea>
-
-            </div>
-
-            <button
-                class="btn btn-success">
-
-                {{ isEditMode ? 'Update' : 'Add' }}
-
-            </button>
-
-        </form>
-
+        <!-- Table View Structure -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light border-bottom text-secondary small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Plan Specification</th>
+                        <th>Coverage</th>
+                        <th>Premium</th>
+                        <th>Duration</th>
+                        <th>Billing Cycle</th>
+                        <th>Status</th>
+                        @if (auth.getRole() === 'Admin') {
+                            <th class="text-end pe-4">Management Actions</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (p of plans(); track p.planId) {
+                        <tr>
+                            <td class="fw-medium ps-4 text-dark">{{ p.planName }}</td>
+                            <td>{{ p.coverageAmount | currency:'INR':'symbol':'1.0-2' }}</td>
+                            <td>{{ p.premiumAmount | currency:'INR':'symbol':'1.0-2' }}</td>
+                            <td>{{ p.durationYears }} {{ p.durationYears === 1 ? 'Year' : 'Years' }}</td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {{ premiumTypeLabels[p.premiumType] }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill d-inline-flex align-items-center"
+                                      [class.bg-success-subtle]="p.isActive"
+                                      [class.text-success]="p.isActive"
+                                      [class.bg-danger-subtle]="!p.isActive"
+                                      [class.text-danger]="!p.isActive">
+                                    <span class="p-1 rounded-circle me-1 d-inline-block" 
+                                          [class.bg-success]="p.isActive" 
+                                          [class.bg-danger]="!p.isActive"></span>
+                                    {{ p.isActive ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
+                            @if (auth.getRole() === 'Admin') {
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" (click)="edit(p)">
+                                            Modify
+                                        </button>
+                                        <button class="btn btn-outline-danger" [disabled]="!p.isActive" (click)="deactivate(p.planId)">
+                                            Deactivate
+                                        </button>
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td [attr.colspan]="auth.getRole() === 'Admin' ? 7 : 6" class="text-center py-5 text-muted">
+                                <p class="mb-0 fw-semibold">No insurance plans found matching the active selection criteria.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-
 </div>
-}
-<br>
-
-<div class="col-md-6 mb-3">
-
-                    <label>Select Product</label>
-
-                    <select [(ngModel)]="selectedProduct1" (change)="onChange()">
-                        @for (product of Products(); track product.productId) {
-                          <option [ngValue]="product.productId">{{ product.productName }}</option>
-                        }
-                    </select>
-
-                </div>
-
-
-<table class="table table-bordered">
-
-    <thead class="table-dark">
-
-        <tr>
-
-            <th>Plan</th>
-            <th>coverage Amount</th>
-            <th>Premium Amount</th>
-            <th>Duration Years</th>
-            <th>PremiumType</th>
-            <th>Status</th>
-            @if(auth.getRole() == 'Admin'){
-            <th>Action</th>
-            }
-        </tr>
-
-    </thead>
-
-    <tbody>
-
-        <tr *ngFor="let p of plans()">
-
-            <td>{{p.planName}}</td>
-            <td>{{p.coverageAmount}}</td>
-            <td>{{p.premiumAmount}}</td>
-            <td>{{p.durationYears}}</td>
-            <td>{{premiumTypeLabels[p.premiumType]}}</td>
-            <td>
-                <span
-                    class="badge"
-                    [class.bg-success]="p.isActive"
-                    [class.bg-danger]="!p.isActive">
-                    {{p.isActive ? 'Active' : 'Inactive'}}
-                </span>
-            </td>
-            @if(auth.getRole() == 'Admin'){
-            <td>
-                <button
-                    class="btn btn-primary btn-sm"
-                    (click)="edit(p)">
-                    Edit
-                </button>
-                <button
-                    class="btn btn-danger btn-sm ms-2"
-                    (click)="deactivate(p.planId)">
-                    Deactivate
-                </button>
-            </td>
-        }
-        </tr>
-    </tbody>
-</table>

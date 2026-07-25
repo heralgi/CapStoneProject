@@ -97,7 +97,10 @@ namespace InsurancePolicyApi.Repositories
 
         public async Task<Policy?> GetByIdAsync(int id)
         {
-            return await _ctx.Policies.FindAsync(id);
+            return await _ctx.Policies
+                .Include(p => p.Customer)
+                .Include(p => p.PolicyPlan)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Policy> UpdateAsync(Policy policy)

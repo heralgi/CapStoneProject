@@ -22,6 +22,14 @@ export class Products implements OnInit {
   isEditMode = false;
 
   ProductType = ProductType;
+  // Define accessible dictionary structures inside your target component file
+productTypeLabels: Record<number, string> = {
+  0: 'Health',
+  1: 'Motor',
+  2: 'Life',
+  3: 'Travel'
+};
+
 
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);

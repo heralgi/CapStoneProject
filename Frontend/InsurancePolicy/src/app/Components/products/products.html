@@ -1,155 +1,180 @@
-<h3>Product Management</h3>
-<div class="container mt-4">
-<div class="card-header bg-dark text-white">
-        <h4 class="mb-0">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h4>
+<div class="container-fluid py-4">
+
+    <!-- Page Header Block -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h1 class="h2 fw-bold text-dark mb-1">Product Management</h1>
+            <p class="text-muted mb-0">Create, update, and manage core insurance enterprise products.</p>
+        </div>
     </div>
 
-    <div class="card-body">
+    <!-- Contextual Form Card (Rendered on top for better user focus) -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-dark text-white py-3">
+            <h5 class="card-title h6 mb-0 fw-semibold">
+                {{ isEditMode ? 'Modify Product Specifications' : 'Register New Insurance Product' }}
+            </h5>
+        </div>
 
-        <form [formGroup]="form" (ngSubmit)= "create()">
+        <div class="card-body p-4">
+            <!-- Fixed: Dynamically toggling submission pipelines based on state -->
+            <form [formGroup]="form" (ngSubmit)="isEditMode ? update() : create()" novalidate>
+                <div class="row g-3 mb-3">
+                    <div class="col-lg-6">
+                        <label for="productName" class="form-label fw-semibold small text-secondary">Product Name</label>
+                        <input 
+                            id="productName"
+                            type="text" 
+                            class="form-control" 
+                            placeholder="e.g., Comprehensive Health Guard"
+                            formControlName="productName">
+                    </div>
 
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-
-                    <label>Name</label>
-
-                    <input
-                        class="form-control"
-                        formControlName="productName">
-
+                    <div class="col-lg-6">
+                        <label for="productType" class="form-label fw-semibold small text-secondary">Product Line Segment</label>
+                        <select 
+                            id="productType"
+                            class="form-select" 
+                            formControlName="productType">
+                            <option [ngValue]="null" disabled>-- Select Segment Line --</option>
+                            <option [ngValue]="0">Health</option>
+                            <option [ngValue]="1">Motor</option>
+                            <option [ngValue]="2">Life</option>
+                            <option [ngValue]="3">Travel</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
-
-                    <label>Type</label>
-
-                    <select
-                        class="form-select"
-                        formControlName="productType">
-
-                        <option [ngValue]="0">Health</option>
-                        <option [ngValue]="1">Motor</option>
-                        <option [ngValue]="2">Life</option>
-                        <option [ngValue]="3">Travel</option>
-
-                    </select>
-
+                <div class="mb-3">
+                    <label for="description" class="form-label fw-semibold small text-secondary">Operational Description</label>
+                    <textarea 
+                        id="description"
+                        rows="3" 
+                        class="form-control" 
+                        placeholder="Define scope, baseline coverages, target demographics, and organizational parameters..."
+                        formControlName="description">
+                    </textarea>
                 </div>
 
+                <div class="form-check form-switch mb-4">
+                    <input 
+                        id="isActive"
+                        class="form-check-input" 
+                        type="checkbox" 
+                        role="switch"
+                        formControlName="isActive">
+                    <label class="form-check-label fw-semibold small text-dark" for="isActive">
+                        Set Product Status to Active
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                    <button 
+                        type="button" 
+                        class="btn btn-light border px-4" 
+                        (click)="resetForm()">
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="btn btn-success px-4"
+                        [disabled]="form.invalid">
+                        {{ isEditMode ? 'Save Changes' : 'Deploy Product' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Directory Infrastructure Block -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom">
+            <div class="row align-items-center g-2">
+                <div class="col-md-6">
+                    <h5 class="mb-0 fw-bold text-dark h6">Active Product Catalog</h5>
+                </div>
+                <div class="col-md-6 col-lg-4 ms-auto">
+                    <!-- Added form element/signal hooks onto standard search text controls -->
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input 
+                            type="search"
+                            class="form-control border-start-0" 
+                            placeholder="Filter registry by name or token...">
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="mb-3">
-
-                <label>Description</label>
-
-                <textarea
-                    rows="3"
-                    class="form-control"
-                    formControlName="description">
-                </textarea>
-
-            </div>
-
-            <div class="form-check mb-3">
-
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    formControlName="isActive">
-
-                <label class="form-check-label">
-                    Active
-                </label>
-
-            </div>
-
-            <button
-                class="btn btn-success me-2"
-                type="submit">
-
-                {{ isEditMode ? 'Update' : 'Add' }}
-
-            </button>
-
-            <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="resetForm()">
-
-                Cancel
-
-            </button>
-
-        </form>
-
+        <!-- High-Performance Adaptive Dynamic View Grid -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-secondary small text-uppercase fw-semibold">
+                    <tr>
+                        <th class="ps-4">Product Specifications</th>
+                        <th>Classification</th>
+                        <th style="width: 45%;">Core Scope & Provisions</th>
+                        <th>Market Status</th>
+                        <th class="text-end pe-4" style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (p of products(); track p.productId) {
+                        <tr>
+                            <td class="fw-semibold text-dark ps-4">
+                                {{ p.productName }}
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    <!-- Resolved: Maps numeric productType IDs to friendly text labels -->
+                                    {{ p.productType }}
+                                </span>
+                            </td>
+                            <td class="text-muted small text-truncate" style="max-width: 300px;">
+                                {{ p.description || 'No descriptive context provided.' }}
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill d-inline-flex align-items-center"
+                                      [class.bg-success-subtle]="p.isActive"
+                                      [class.text-success]="p.isActive"
+                                      [class.bg-danger-subtle]="!p.isActive"
+                                      [class.text-danger]="!p.isActive">
+                                    <span class="p-1 rounded-circle me-1 d-inline-block" 
+                                          [class.bg-success]="p.isActive" 
+                                          [class.bg-danger]="!p.isActive"></span>
+                                    {{ p.isActive ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group btn-group-sm">
+                                    <button 
+                                        type="button"
+                                        class="btn btn-outline-primary" 
+                                        (click)="edit(p)">
+                                        Modify
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        class="btn btn-outline-danger" 
+                                        [disabled]="!p.isActive"
+                                        (click)="delete(p.productId)">
+                                        Deactivate
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <i class="bi bi-box-seam d-block display-6 text-light mb-2"></i>
+                                <p class="mb-0 fw-semibold">No operational products match current selection criteria.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
-<select class="form-select" [(ngModel)]="ProductType">
-    <option [ngValue]="0">Health</option>
-    <option [ngValue]="1">Motor</option>
-    <option [ngValue]="2">Life</option>
-    <option [ngValue]="3">Travel</option>
-</select>
-
-<table class="table table-bordered ">
-
-    <thead class="table-dark">
-
-        <tr>
-            <th>Name</th>
-
-            <th>Type</th>
-
-            <th>Description</th>
-
-            <th>Status</th>
-
-            <th>Action</th>
-
-        </tr>
-
-    </thead>
-
-    <tbody>
-
-        <tr *ngFor="let p of products()">
-
-            <td>{{p.productName}}</td>
-
-            <td>{{p.productType}}</td>
-
-            <td>{{p.description}}</td>
-
-            <td>
-
-                <span
-                    class="badge"
-                    [class.bg-success]="p.isActive"
-                    [class.bg-danger]="!p.isActive">
-
-                    {{p.isActive ? 'Active' : 'Inactive'}}
-
-                </span>
-
-            </td>
-
-            <td>
-                <button
-                    class="btn btn-primary btn-sm"
-                    (click)="edit(p)">
-                    Edit
-                </button>
-                <button
-                    class="btn btn-danger btn-sm ms-2"
-                    (click)="delete(p.productId)">
-                    Deactivate
-                </button>
-            </td>
-
-        </tr>
-
-    </tbody>
-
-</table>

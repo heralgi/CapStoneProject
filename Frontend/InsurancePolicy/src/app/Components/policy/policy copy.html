@@ -1,0 +1,108 @@
+<h3>Policy View</h3>
+@if(!toggleTable()){
+<table class="table table-bordered">
+
+  <thead class="table-dark">
+    <tr>
+      <th>Policy Number</th>
+      <th>Plan Name</th>
+      <th>Coverage Amount</th>
+      <th>Premium Amount</th>
+      <th>Premium Type</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Policy Status</th>
+      <th>Aadhar Number</th>
+      <th>Vehicle Number</th>
+      <th>Total Premium Paid</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of policies()">
+      <td>{{p.policyNumber}}</td>
+      <td>{{p.planName}}</td>
+      <td>{{p.coverageAmount}}</td>
+      <td>{{p.premiumAmount}}</td>
+      <td>{{p.premiumType}}</td>
+      <td>
+        <p>{{p.startDate | date:'dd/MM/yyyy' }}</p>
+      </td>
+      <td>
+        <p>{{p.endDate | date:'dd/MM/yyyy' }}</p>
+      </td>
+      <td>{{p.policyStatus}}</td>
+      <td>{{p.aadharNumber}}</td>
+      <td>{{p.vehicleNumber}}</td>
+      <td>{{p.totalPremiumPaid}}</td>
+      @if(p.policyStatus === 'PendingPayment'){
+      <td>
+        <button class="btn btn-primary" (click)="pay()">
+          Payment</button>
+      </td>
+      }
+    </tr>
+
+  </tbody>
+
+</table>
+}
+@else {
+<div class="col-md-5">
+  <div class="card p-3 shadow-sm">
+    <h4>Record Premium Payment</h4>
+    <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+
+      <div class="mb-3">
+        <label class="form-label">Policy ID Reference</label>
+        <input type="number" class="form-control" formControlName="policyId">
+        @if (paymentForm.controls.policyId.touched && paymentForm.controls.policyId.invalid) {
+        <small class="text-danger">A valid policy reference number is required.</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Premium Amount ($)</label>
+        <input type="number" step="0.01" class="form-control" formControlName="amount">
+        @if (paymentForm.controls.amount.touched && paymentForm.controls.amount.invalid) {
+        <small class="text-danger">Amount must be greater than zero.</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Payment Mode</label>
+        <select class="form-select" formControlName="paymentMode">
+          @for (mode of paymentModes; track mode) {
+          <option [value]="mode">{{ paymentModes[mode] }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Transaction Reference String</label>
+        <input type="text" class="form-control" formControlName="transactionReference" placeholder="e.g., PAY-BR-003">
+        @if (paymentForm.controls.transactionReference.touched && paymentForm.controls.transactionReference.invalid) {
+        <small class="text-danger">Transaction tracking code string is required (Max 100 characters).</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Payment Execution Date</label>
+        <input type="datetime-local" class="form-control" formControlName="paymentDate">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Initial Status</label>
+        <select class="form-select" formControlName="paymentStatus">
+          @for (status of paymentStatuses; track status) {
+          <option [value]="status">{{ paymentStatuses[status] }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100" [disabled]="paymentForm.invalid">Record Payment</button>
+      <button type="button">Cancel</button>
+    </form>
+  </div>
+</div>
+}
