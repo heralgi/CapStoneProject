@@ -20,6 +20,15 @@ export interface PaymentRequest {
   paymentStatus: PaymentStatus;
 }
 
+export interface PaymentPolicyNumberRequest {
+  policyNumber: string;
+  amount: number;
+  paymentMode: PaymentMode;
+  transactionReference: string;
+  paymentDate: string; // ISO date string (YYYY-MM-DDTHH:mm:ssZ)
+  paymentStatus: PaymentStatus;
+}
+
 export interface PolicyPaymentResponse {
   paymentId: number;
   policyNumber: string;

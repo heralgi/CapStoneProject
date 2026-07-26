@@ -27,4 +27,12 @@ export class Claim implements OnInit{
       error: err => console.error(err)
     });
   }
+
+  approve(p: ClaimResponse): void{
+
+  }
+
+  reject(p: ClaimResponse): void{
+
+  }
 }

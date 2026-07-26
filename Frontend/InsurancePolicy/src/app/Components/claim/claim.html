@@ -1,27 +1,109 @@
-<h3>Claim Review</h3>
-<table class="table table-bordered">
-    <thead class="table-dark">
+<div class="card shadow-sm border-0 mb-4">
+  <!-- Card Header with Responsive Grid Layout -->
+  <div class="card-header bg-white py-3 border-bottom">
+    <div class="row align-items-center g-2">
+      <div class="col-md-6">
+        <h5 class="mb-0 fw-bold text-dark h6">Claim Review</h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- Responsive Structural Table Wrapper -->
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light text-secondary small text-uppercase fw-semibold">
         <tr>
-            <th>Claim Number</th>
-            <th>Policy Number</th>
-            <th>Claim Amount</th>
-            <th>Claim Reason</th>
-            <th>Incident Date</th>
-            <th>Claim Status</th>
-            <th>InternalStaff Remarks</th>
-            <th>Admin Remarks</th>
+          <!-- Fixed Width Serial Number Column -->
+          <th class="ps-4" style="width: 70px;">#</th>
+          <th>Claim Details</th>
+          <th>Policy Details</th>
+          <th class="text-end">Claim Amount</th>
+          <th style="width: 25%">Claim Reason</th>
+          <th>Incident Date</th>
+          <th>Review Status</th>
+          <th>Staff Remarks</th>
+          <th class="text-end pe-4" style="width: 180px;">Actions</th>
         </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let p of claims()">
-            <td>{{p.claimNumber}}</td>
-            <td>{{p.policyNumber}}</td>
-            <td>{{p.claimAmount}}</td>
-            <td>{{p.claimReason}}</td>
-            <td>{{p.incidentDate}}</td>
-            <td>{{p.claimStatus}}</td>
-            <td>{{p.internalStaffRemarks}}</td>
-            <td>{{p.adminRemarks}}</td>
+      </thead>
+
+      <tbody>
+        <!-- TrackBy optimized loop with implicit index extraction -->
+        @for (p of claims(); track p.claimNumber; let index = $index) {
+        <tr>
+          <!-- Serial Number Column (1-indexed) -->
+          <td class="text-muted small ps-4">
+            {{ index + 1 }}
+          </td>
+
+          <!-- Main Claim Identifier -->
+          <td class="fw-semibold text-dark font-monospace">
+            {{ p.claimNumber }}
+          </td>
+
+          <!-- Secondary Policy Identifier -->
+          <td class="text-secondary font-monospace">
+            {{ p.policyNumber }}
+          </td>
+
+          <!-- Financial Context Formatted to Rupee Standard -->
+          <td class="text-end fw-bold text-dark">
+            {{ p.claimAmount | currency:'INR':'symbol':'1.2-2' }}
+          </td>
+
+          <!-- Description Text with Safe Truncation Boundaries -->
+          <td class="text-muted small text-truncate" style="max-width: 250px;" [title]="p.claimReason">
+            {{ p.claimReason || 'No descriptive context provided.' }}
+          </td>
+
+          <!-- Time-based Tracking Metrics -->
+          <td class="text-secondary text-nowrap">
+            {{ p.incidentDate | date:'mediumDate' }}
+          </td>
+
+          <!-- Contextual Status Badges with Internal Indicator Dots -->
+          <td>
+            <span class="badge rounded-pill d-inline-flex align-items-center" [ngClass]="{
+                'bg-success-subtle text-success': p.claimStatus === 'Approved',
+                'bg-danger-subtle text-danger': p.claimStatus === 'Rejected',
+                'bg-warning-subtle text-warning-emphasis': p.claimStatus === 'Pending'
+              }">
+              <span class="p-1 rounded-circle me-1 d-inline-block" [ngClass]="{
+                  'bg-success': p.claimStatus === 'Approved',
+                  'bg-danger': p.claimStatus === 'Rejected',
+                  'bg-warning': p.claimStatus === 'Pending'
+                }">
+              </span>
+              {{ p.claimStatus }}
+            </span>
+          </td>
+
+          <!-- Secondary Operational Text Block -->
+          <td class="text-muted small text-truncate" style="max-width: 150px;" [title]="p.internalStaffRemarks">
+            {{ p.internalStaffRemarks || '—' }}
+          </td>
+
+          <!-- Action Control Array Block -->
+          <td class="text-end pe-4">
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-primary" [disabled]="p.claimStatus !== 'Pending'" (click)="approve(p)">
+                Approve
+              </button>
+              
+              <button class="btn btn-outline-danger" [disabled]="p.claimStatus !== 'Pending'" (click)="reject(p)">
+                Reject
+              </button>
+            </div>
+          </td>
         </tr>
-    </tbody>
-</table>
+        } @empty {
+        <!-- Empty State Row Mapping All 9 Column Layout Nodes -->
+        <tr>
+          <td colspan="9" class="text-center py-5 text-muted">
+            No claims available for review.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

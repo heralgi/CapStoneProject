@@ -1,58 +1,109 @@
-<h3>Products</h3>
+<div class="container-fluid py-4">
+  <!-- Interactive Header Panel -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="h4 fw-bold text-dark mb-1">Insurance Solutions</h1>
+      <p class="text-muted small mb-0">Explore and compare custom coverage profiles built for you.</p>
+    </div>
 
-<select class="form-select" [(ngModel)]="ProductType">
-    <option [ngValue]="0">Health</option>
-    <option [ngValue]="1">Motor</option>
-    <option [ngValue]="2">Life</option>
-    <option [ngValue]="3">Travel</option>
-</select>
+    <!-- Segmented Filter Control (Type-safe using Component State Properties) -->
+    <!-- Segmented Filter Control (Type-safe String Tracking) -->
+<div class="bg-light p-1 rounded-3 d-inline-flex border w-100 w-md-auto overflow-x-auto">
+  
+  <!-- Health Tab -->
+  <button class="btn btn-sm border-0 px-3 py-2 rounded-2 text-nowrap"
+          [class.bg-white]="selectedProductType === 'Health'" 
+          [class.shadow-sm]="selectedProductType === 'Health'"
+          [class.fw-bold]="selectedProductType === 'Health'" 
+          (click)="selectedProductType = 'Health'">
+    <i class="bi bi-heart-pulse text-danger me-1"></i> Health
+  </button>
+  
+  <!-- Motor Tab -->
+  <button class="btn btn-sm border-0 px-3 py-2 rounded-2 text-nowrap"
+          [class.bg-white]="selectedProductType === 'Motor'" 
+          [class.shadow-sm]="selectedProductType === 'Motor'"
+          [class.fw-bold]="selectedProductType === 'Motor'" 
+          (click)="selectedProductType = 'Motor'">
+    <i class="bi bi-car-front text-primary me-1"></i> Motor
+  </button>
+  
+  <!-- Life Tab -->
+  <button class="btn btn-sm border-0 px-3 py-2 rounded-2 text-nowrap"
+          [class.bg-white]="selectedProductType === 'Life'" 
+          [class.shadow-sm]="selectedProductType === 'Life'"
+          [class.fw-bold]="selectedProductType === 'Life'" 
+          (click)="selectedProductType = 'Life'">
+    <i class="bi bi-shield-check text-success me-1"></i> Life
+  </button>
+  
+  <!-- Travel Tab -->
+  <button class="btn btn-sm border-0 px-3 py-2 rounded-2 text-nowrap"
+          [class.bg-white]="selectedProductType === 'Travel'" 
+          [class.shadow-sm]="selectedProductType === 'Travel'"
+          [class.fw-bold]="selectedProductType === 'Travel'" 
+          (click)="selectedProductType = 'Travel'">
+    <i class="bi bi-airplane text-warning me-1"></i> Travel
+  </button>
+  
+</div>
 
-<table class="table table-bordered ">
+  </div>
 
-    <thead class="table-dark">
-
-        <tr>
-            <th>Name</th>
-
-            <th>Type</th>
-
-            <th>Description</th>
-
-            <th>Status</th>
-
-            <th>Plans</th>
-
-        </tr>
-
-    </thead>
-
-    <tbody>
-        
-        <tr *ngFor="let p of products()">
-            <!-- @if(p.isActive){ -->
-            <td>{{p.productName}}</td>
-
-            <td>{{p.productType}}</td>
-
-            <td>{{p.description}}</td>
-
-            <td>
-
-                <span
-                    class="badge"
-                    [class.bg-success]="p.isActive"
-                    [class.bg-danger]="!p.isActive">
-                    {{p.isActive ? 'Active' : 'Inactive'}}
+  <!-- Product Catalog Dynamic Responsive Grid -->
+  <div class="row g-4">
+    @for (p of products(); track p.productId) {
+      <!-- Customer View Filter Enforcement: Active status + matching selected tab category -->
+      @if (p.isActive && p.productType === selectedProductType) {
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 border-0 shadow-sm transition-hover rounded-3">
+            <div class="card-body d-flex flex-column p-4">
+              
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge bg-light text-secondary border px-2.5 py-1.5 text-uppercase fs-8 tracking-wider fw-semibold">
+                  {{ p.productType }}
                 </span>
-            </td>
-            <td>
-                <button
-                    class="btn btn-primary btn-sm" 
-                    (click)="viewPlan(p.productId)">
-                    View
+                
+                <span class="text-success small fw-medium d-inline-flex align-items-center">
+                  <span class="p-1 bg-success rounded-circle me-1.5 d-inline-block"></span>
+                  Instant Cover
+                </span>
+              </div>
+
+              <h2 class="h5 fw-bold text-dark mb-2">
+                {{ p.productName }}
+              </h2>
+
+              <p class="text-muted small flex-grow-1 line-clamp-3 mb-4">
+                {{ p.description || 'Comprehensive risk coverage with customizable baseline provisions tailored to protect what matters most.' }}
+              </p>
+
+              <div class="border-top pt-3 mt-auto d-flex align-items-center justify-content-between">
+                <span class="text-muted small fw-medium">Flexible Base Plans</span>
+                
+                <button class="btn btn-primary px-4 py-2 fw-semibold rounded-2 shadow-xs fs-7 d-inline-flex align-items-center gap-1" 
+                        (click)="viewPlan(p.productId)">
+                  Explore Plans
+                  <i class="bi bi-arrow-right small"></i>
                 </button>
-            </td>
-        <!-- } -->
-        </tr>
-    </tbody>
-</table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      }
+    } @empty {
+      <div class="col-12">
+        <div class="text-center py-5 bg-white border rounded-3 shadow-sm">
+          <div class="bg-light d-inline-flex p-3 rounded-circle mb-3">
+            <i class="bi bi-shield-exclamation fs-3 text-muted"></i>
+          </div>
+          <h3 class="h6 fw-bold text-dark mb-1">No Available Products</h3>
+          <p class="text-muted small max-w-400 mx-auto px-3">
+            We are tailoring custom insurance packages for this selection. Check back shortly to view our updated protection plans.
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -20,18 +20,35 @@ export class Payment implements OnInit{
   protected isLoading = signal<boolean>(false);
   protected errorMessage = signal<string | null>(null);
 
-  // Expose Enums arrays to the template structure safely
-  protected paymentModes = Object.values(PaymentMode).filter(v => typeof v === 'number');
-  protected paymentStatuses = Object.values(PaymentStatus).filter(v => typeof v === 'number');
+ // 1. Expose the actual Enum types to the HTML template template context
+  protected PaymentMode = PaymentMode;
+  protected PaymentStatus = PaymentStatus;
+
+  // 2. Extracted keys arrays used for the @for loop generation
+  protected paymentModes = Object.values(PaymentMode).filter(v => typeof v === 'number') as PaymentMode[];
+  protected paymentStatuses = Object.values(PaymentStatus).filter(v => typeof v === 'number') as PaymentStatus[];
+
+  // 3. User-friendly human string text definitions mapping
+  protected paymentModeLabels: Record<PaymentMode, string> = {
+    [PaymentMode.UPI]: 'UPI',
+    [PaymentMode.Card]: 'Card',
+    [PaymentMode.NetBanking]: 'Net Banking',
+    [PaymentMode.Cash]: 'Cash'
+  };
+  protected paymentStatusLabels: Record<PaymentStatus, string> = {
+    [PaymentStatus.Success]: 'Success',
+    [PaymentStatus.Failed]: 'Failed',
+    [PaymentStatus.Pending]: 'Pending'
+  };
 
   // Form mapping explicitly built matching your .NET Validation annotations
   protected paymentForm = this.fb.nonNullable.group({
-    policyId: [0, [Validators.required, Validators.min(1)]],
+    policyNumber: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
     amount: [0.00, [Validators.required, Validators.min(0.01)]],
     paymentMode: [PaymentMode.Cash, [Validators.required]],
     transactionReference: ['', [Validators.required, Validators.maxLength(100)]],
     paymentDate: [new Date().toISOString().substring(0, 16), [Validators.required]],
-    paymentStatus: [PaymentStatus.Pending, [Validators.required]]
+    paymentStatus: [PaymentStatus.Success, [Validators.required]]
   });
 
   ngOnInit(): void {
@@ -66,7 +83,7 @@ export class Payment implements OnInit{
       paymentDate: new Date(formRaw.paymentDate).toISOString()
     };
 
-    this.paymentService.recordPayment(requestPayload).subscribe({
+    this.paymentService.recordPaymentWithPolicyNumber(requestPayload).subscribe({
       next: (newPayment) => {
         // Optimistically update your locally rendered signal array immediately
         this.paymentHistory.update(current => [newPayment, ...current]);

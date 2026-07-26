@@ -1,58 +1,68 @@
-<nav class="navbar navbar-expand-lg bg-black px-4 py-3">
-
-    <!-- Company Name -->
-    <a class="navbar-brand text-white fw-bold fs-4" href="#">
-        Insurance Policy App
+<!-- Added 'fixed-top' to lock the bar, and 'bg-white' or 'bg-body' to ensure background visibility when scrolling over text -->
+<nav class="navbar navbar-expand-lg border-bottom bg-body fixed-top" aria-label="Main repository navigation">
+  <div class="container-fluid px-4">
+    
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold text-primary" href="/admin/dashboard">
+      <svg class="bi" width="24" height="24" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 2.861-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0"/>
+      </svg>
+      <span>Insurance Policy App</span>
     </a>
 
-    <!-- Navigation -->
-    <ul class="nav nav-pills ms-auto align-items-center">
+    <!-- Mobile Menu Toggle Button -->
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
+    <!-- Navigation Canvas -->
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <!-- Primary Core Dashboard Links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 mt-2 mt-lg-0">
         <li class="nav-item">
-            <button
-                class="nav-link"
-                (click)="router.navigate(['/dashboard/products'])"
-                routerLinkActive="activeLink">
-                Browse Products
-            </button>
+          <a class="nav-link px-3 rounded active" aria-current="page" href="/dashboard/products">Browse Products</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 rounded" href="/dashboard/policy">My Policies</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 rounded" href="/dashboard/claim">My Claims</a>
+        </li>
+      </ul>
+
+      <!-- Secondary Utility Links / User Session Controls -->
+      <div class="navbar-nav ms-auto align-items-lg-center gap-3">
+        <!-- Notification Center -->
+        <button class="btn btn-link nav-link p-2 position-relative border-0" aria-label="View notifications">
+          <svg class="bi" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+          </svg>
+          <span class="position-absolute top-1 start-75 translate-middle p-1 bg-danger border border-light rounded-circle" aria-hidden="true"></span>
+        </button>
 
         
-        <li class="nav-item">
-            <button class="nav-link"
-            (click)="router.navigate(['/dashboard/policy'])"
-            routerLinkActive="activeLink">
-                My Policies
-            </button>
-        </li>
+        <div class="nav-item dropdown">
+          <button class="btn d-flex align-items-center dropdown-toggle gap-2 p-1 border-0 text-reset" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Open user settings menu">
+            <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-semibold" style="width: 32px; height: 32px; font-size: 0.875rem;">
+              AD
+            </div>
+            <span class="d-none d-lg-inline text-body-secondary small me-1">Admin Portal</span>
+          </button>
+          
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border mt-lg-2" aria-labelledby="userMenu">
+            <li><h6 class="dropdown-header">Logged in as Admin</h6></li>
+            <li><a class="dropdown-item" href="#">Account Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><button class="dropdown-item text-danger" (click)="logout()">Sign Out</button></li>
+          </ul>
+        </div>
 
-        <li class="nav-item">
-            <button class="nav-link"
-            (click)="router.navigate(['/dashboard/claim'])"
-            routerLinkActive="activeLink">
-                My Claims
-            </button>
-        </li>
-
-        <li class="nav-item">
-            <button class="nav-link"
-            (click)="router.navigate(['/dashboard/profile'])"
-            routerLinkActive="activeLink">
-                Profile
-            </button>
-        </li>
-
-        <!-- Logout -->
-        <li class="nav-item ms-3">
-            <button
-                class="btn btn-outline-light"
-                (click)="logout()">
-                Logout
-            </button>
-        </li>
-
-    </ul>
-
+      </div>
+    </div>
+  </div>
 </nav>
 
-<router-outlet></router-outlet>
+<!-- Core Application View Container -->
+<!-- Added 'pt-5 mt-4' layout spacing buffer to counteract fixed element displacement -->
+<main class="container-fluid px-4 py-4 pt-5 mt-4">
+  <router-outlet></router-outlet>
+</main>

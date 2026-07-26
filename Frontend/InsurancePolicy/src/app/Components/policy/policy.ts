@@ -56,28 +56,5 @@ export class Policy implements OnInit{
     this.toggleTable.update(value => !value);
   }
 
-submitPayment(): void {
-    if (this.paymentForm.invalid) {
-      this.paymentForm.markAllAsTouched();
-      return;
-    }
 
-    const formRaw = this.paymentForm.getRawValue();
-    
-    // Format JSON model perfectly to match your exact backend contracts
-    const requestPayload = {
-      ...formRaw,
-      paymentDate: new Date(formRaw.paymentDate).toISOString()
-    };
-
-    this.paymentService.recordPayment(requestPayload).subscribe({
-      next: (newPayment) => {
-        // Optimistically update your locally rendered signal array immediately
-        this.paymentHistory.update(current => [newPayment, ...current]);
-        this.paymentForm.reset({ paymentDate: new Date().toISOString().substring(0, 16) });
-        this.errorMessage.set(null);
-      },
-      error: () => this.errorMessage.set('Could not record your premium transaction profile.')
-    });
-}
 }

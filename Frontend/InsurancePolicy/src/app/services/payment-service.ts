@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PaymentRequest, PolicyPaymentResponse } from '../Models/payment-model';
+import { PaymentPolicyNumberRequest, PolicyPaymentResponse } from '../Models/payment-model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +24,10 @@ export class PaymentsService {
   /** POST: api/premiumpayments */
   recordPayment(payment: PaymentRequest): Observable<PolicyPaymentResponse> {
     return this.http.post<PolicyPaymentResponse>(this.apiUrl, payment);
+  }
+
+  /** POST: api/premiumpayments */
+  recordPaymentWithPolicyNumber(payment: PaymentPolicyNumberRequest): Observable<PolicyPaymentResponse> {
+    return this.http.post<PolicyPaymentResponse>(`${this.apiUrl}/by-policyNumber`, payment);
   }
 }

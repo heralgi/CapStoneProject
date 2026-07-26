@@ -13,10 +13,10 @@
         <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
           
           <div class="mb-3">
-            <label class="form-label">Policy ID Reference</label>
-            <input type="number" class="form-control" formControlName="policyId">
-            @if (paymentForm.controls.policyId.touched && paymentForm.controls.policyId.invalid) {
-              <small class="text-danger">A valid policy reference number is required.</small>
+            <label class="form-label">Policy Number</label>
+            <input type="text" class="form-control" formControlName="policyNumber">
+            @if (paymentForm.controls.policyNumber.touched && paymentForm.controls.policyNumber.invalid) {
+              <small class="text-danger">A valid policy number is required.</small>
             }
           </div>
 
@@ -32,7 +32,7 @@
             <label class="form-label">Payment Mode</label>
             <select class="form-select" formControlName="paymentMode">
               @for (mode of paymentModes; track mode) {
-                <option [value]="mode">{{ paymentModes[mode] }}</option> 
+                <option [value]="mode">{{ paymentModeLabels[mode] }}</option> 
               }
             </select>
           </div>
@@ -54,7 +54,7 @@
             <label class="form-label">Initial Status</label>
             <select class="form-select" formControlName="paymentStatus">
               @for (status of paymentStatuses; track status) {
-                <option [value]="status">{{ paymentStatuses[status] }}</option>
+                <option [value]="status">{{ paymentStatusLabels[status] }}</option>
               }
             </select>
           </div>

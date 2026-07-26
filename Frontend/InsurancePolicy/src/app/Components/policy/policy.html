@@ -12,6 +12,7 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light text-secondary small text-uppercase fw-semibold border-bottom">
                 <tr>
+                    <th class="ps-4" style="width: 70px;">#</th>
                     <th class="ps-4">Policy No.</th>
                     <th>Plan Specification</th>
                     <th>Coverage</th>
@@ -21,12 +22,12 @@
                     <th>Ledger Status</th>
                     <th>Identification</th>
                     <th>Paid to Date</th>
-                    <th class="text-end pe-4" style="min-width: 130px;">Operations</th>
                 </tr>
             </thead>
             <tbody>
-                @for (p of policies(); track p.policyNumber) {
+                @for (p of policies(); track p.policyNumber; let index = $index) {
                     <tr>
+                        <td class="text-muted small ps-4">{{ index + 1 }}</td>
                         <!-- Policy Number Identifier -->
                         <td class="fw-bold text-dark ps-4 small">
                             {{ p.policyNumber }}
@@ -99,19 +100,6 @@
                         <!-- Overall Balance Metrics -->
                         <td class="fw-bold text-success">
                             {{ p.totalPremiumPaid | currency:'INR':'symbol':'1.0-2' }}
-                        </td>
-
-                        <!-- Local Actions Group -->
-                        <td class="text-end pe-4">
-                            @if (p.policyStatus === 'PendingPayment') {
-                                <button class="btn btn-primary btn-sm px-3 shadow-sm text-nowrap" (click)="pay()">
-                                    Collect Premium
-                                </button>
-                            } @else {
-                                <button class="btn btn-light btn-sm text-muted border text-nowrap" disabled>
-                                    No Actions
-                                </button>
-                            }
                         </td>
                     </tr>
                 } @empty {

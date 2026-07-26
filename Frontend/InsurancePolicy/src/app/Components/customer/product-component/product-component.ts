@@ -20,7 +20,9 @@ export class ProductComponent implements OnInit{
 
   isEditMode = false;
 
-  ProductType = ProductType;
+// UPGRADED TO MATCH STRINGS COMING FROM YOUR API LAYER
+protected readonly ProductType = ProductType;
+public selectedProductType: string = 'Health'; // Default starting category state as a string literal
 
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);

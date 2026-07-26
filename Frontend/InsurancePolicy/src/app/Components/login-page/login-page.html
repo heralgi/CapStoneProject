@@ -4,28 +4,39 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="login()" class="text-center">
 
-            <h1 class="h3 mb-4 fw-normal">
-                Insurance Policy App
-            </h1>
+            <!-- Brand Header -->
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+                <svg class="bi text-primary" width="32" height="32" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 2.861-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0"/>
+                </svg>
+                <!-- Changed to text-dark for strong brand presence -->
+                <h1 class="h3 mb-0 fw-bold text-dark">
+                    Insurance Policy App
+                </h1>
+            </div>
 
-            <h4 class="mb-4">Sign In</h4>
+            <!-- Changed to text-secondary for secondary hierarchy -->
+            <h4 class="mb-4 text-secondary fw-semibold">Sign In</h4>
 
             <!-- Email -->
             <div class="form-floating mb-3">
 
+                <!-- Added text-dark to input value -->
                 <input
                     type="email"
-                    class="form-control"
+                    class="form-control text-dark"
                     id="email"
                     placeholder="name@example.com"
                     formControlName="email">
 
-                <label for="email">Email Address</label>
+                <!-- Added text-secondary to label -->
+                <label for="email" class="text-secondary">Email Address</label>
 
                 @if(loginForm.controls.email.touched &&
                 loginForm.controls.email.invalid){
 
-                    <div class="text-danger text-start mt-1">
+                    <!-- Kept text-danger for validation error messages -->
+                    <div class="text-danger text-start mt-1 small">
 
                         @if(loginForm.controls.email.errors?.['required']){
                             Email is required
@@ -44,19 +55,22 @@
             <!-- Password -->
             <div class="form-floating mb-3">
 
+                <!-- Added text-dark to input value -->
                 <input
                     type="password"
-                    class="form-control"
+                    class="form-control text-dark"
                     id="password"
                     placeholder="Password"
                     formControlName="password">
 
-                <label for="password">Password</label>
+                <!-- Added text-secondary to label -->
+                <label for="password" class="text-secondary">Password</label>
 
                 @if(loginForm.controls.password.touched &&
                 loginForm.controls.password.invalid){
 
-                    <div class="text-danger text-start mt-1">
+                    <!-- Kept text-danger for validation error messages -->
+                    <div class="text-danger text-start mt-1 small">
                         Password is required
                     </div>
 
@@ -64,7 +78,8 @@
 
             </div>
 
-            <div class="text-danger mb-3">
+            <!-- Kept text-danger for dynamic authentication error banner -->
+            <div class="text-danger mb-3 small">
                 {{ errorMessage }}
             </div>
 
@@ -86,7 +101,8 @@
 
             </button>
 
-            <p class="mt-5 mb-3 text-muted">
+            <!-- Kept text-muted for the legal copyright notice -->
+            <p class="mt-5 mb-3 text-muted small">
                 © 2026 Insurance Policy App
             </p>
 
