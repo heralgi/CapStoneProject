@@ -6,6 +6,7 @@ namespace InsurancePolicyApi.Entities.Enums
         PendingPayment,
         Active,
         Expired,
-        Cancelled
+        Cancelled,
+        Complete
     }
 }

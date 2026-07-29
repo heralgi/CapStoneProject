@@ -1,4 +1,5 @@
 ﻿using InsurancePolicyApi.DTOs.Common;
+using InsurancePolicyApi.DTOs.Customer;
 using InsurancePolicyApi.Entities;
 using InsurancePolicyApi.Repositories;
 
@@ -16,6 +17,31 @@ namespace InsurancePolicyApi.Services
         public async Task<PagedResponse<Customer>> GetAllAsync(PageQuery pq)
         {
             return await _customerRepository.GetAllAsync(pq);
+        }
+
+        public async Task<IEnumerable<CustomerResponse>> GetAllAsync()
+        {
+            var customers = await _customerRepository.GetAllAsync();
+            List<CustomerResponse> responses = new List<CustomerResponse>();
+
+            foreach(Customer customer in customers)
+            {
+                responses.Add(new CustomerResponse
+                {
+                    CustomerId = customer.Id,
+                    FullName = customer.User.FullName,
+                    Email = customer.User.Email,
+                    MobileNumber = customer.User.MobileNumber,
+                    DateOfBirth = customer.DateOfBirth,
+                    Address = customer.Address,
+                    City = customer.City,
+                    State = customer.State,
+                    PinCode = customer.PinCode,
+                    NomineeName = customer.NomineeName,
+                    NomineeRelation = customer.NomineeRelation
+                });
+            }
+            return responses;
         }
 
         public async Task<Customer?> GetByIdAsync(int id)

@@ -19,6 +19,7 @@ import { ProductComponent } from './Components/customer/product-component/produc
 import { PlanCustomer } from './Components/customer/plan-customer/plan-customer';
 import { PolicyCustomer } from './Components/customer/policy-customer/policy-customer';
 import { Payment } from './Components/payment/payment';
+import { ClaimCustomer } from './Components/customer/claim-customer/claim-customer';
 
 
 export const routes: Routes = [
@@ -69,6 +70,7 @@ export const routes: Routes = [
       { path: 'products', component: ProductComponent },
       { path: 'plans/:id', component: PlanCustomer },
       { path: 'policy', component: PolicyCustomer },
+      { path: 'claim', component: ClaimCustomer },
     ],
     canActivate: [authGuard, roleGuard(['Customer'])]
   },

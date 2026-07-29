@@ -85,7 +85,7 @@ namespace InsurancePolicyApi.Repositories
 
         public async Task<Claim?> GetByIdAsync(int id)
         {
-            return await _ctx.Claims.FindAsync(id);
+            return await _ctx.Claims.Include(c => c.Policy).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<IEnumerable<ClaimResponse>> GetAllClaimsAsync()

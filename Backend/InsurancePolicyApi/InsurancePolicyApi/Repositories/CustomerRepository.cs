@@ -35,6 +35,11 @@ namespace InsurancePolicyApi.Repositories
             };
         }
 
+        public async Task<IEnumerable<Customer>> GetAllAsync()
+        {
+            return await _ctx.Customers.Include(c => c.User).ToListAsync();
+        }
+
         public async Task<Customer?> GetByIdAsync(int id)
         {
             return await _ctx.Customers

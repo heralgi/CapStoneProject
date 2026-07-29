@@ -27,6 +27,14 @@ namespace InsurancePolicyApi.Controllers
             return Ok(customers);
         }
 
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            var customers = await _customerService.GetAllAsync();
+
+            return Ok(customers);
+        }
+
         // GET: api/customers/5
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)

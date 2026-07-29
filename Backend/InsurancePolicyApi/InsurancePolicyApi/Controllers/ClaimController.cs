@@ -53,7 +53,8 @@ namespace InsurancePolicyApi.Controllers
         [HttpPost("raise")]
         public async Task<IActionResult> RaiseClaim(ClaimRequest claim)
         {
-            var result = await _service.RaiseClaimAsync(claim);
+            int userId = int.Parse(User.FindFirst("userid")!.Value);
+            var result = await _service.RaiseClaimAsync(claim, userId);
 
             return Ok(result);
         }
@@ -73,7 +74,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/claims/approve/5
-        [Authorize(Roles= $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
+        [Authorize(Roles= $"{nameof(UserRole.Admin)}")]
         [HttpPut("approve/{claimId:int}")]
         public async Task<IActionResult> ApproveClaim(int claimId)
         {
@@ -86,7 +87,7 @@ namespace InsurancePolicyApi.Controllers
         }
 
         // PUT: api/claims/reject/5
-        [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.InternalStaff)}")]
+        [Authorize(Roles = $"{nameof(UserRole.Admin)}")]
         [HttpPut("reject/{claimId:int}")]
         public async Task<IActionResult> RejectClaim(int claimId)
         {

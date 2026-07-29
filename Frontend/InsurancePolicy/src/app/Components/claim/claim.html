@@ -63,17 +63,20 @@
           <!-- Contextual Status Badges with Internal Indicator Dots -->
           <td>
             <span class="badge rounded-pill d-inline-flex align-items-center" [ngClass]="{
+                'bg-primary-subtle text-primary': p.claimStatus === 'Submitted',
+                'bg-info-subtle text-info-emphasis': p.claimStatus === 'UnderReview',
+                'bg-warning-subtle text-warning-emphasis': p.claimStatus === 'Pending',
                 'bg-success-subtle text-success': p.claimStatus === 'Approved',
-                'bg-danger-subtle text-danger': p.claimStatus === 'Rejected',
-                'bg-warning-subtle text-warning-emphasis': p.claimStatus === 'Pending'
+                'bg-danger-subtle text-danger': p.claimStatus === 'Rejected'
               }">
               <span class="p-1 rounded-circle me-1 d-inline-block" [ngClass]="{
+                  'bg-primary': p.claimStatus === 'Submitted',
+                  'bg-info': p.claimStatus === 'UnderReview',
                   'bg-success': p.claimStatus === 'Approved',
-                  'bg-danger': p.claimStatus === 'Rejected',
-                  'bg-warning': p.claimStatus === 'Pending'
+                  'bg-danger': p.claimStatus === 'Rejected'
                 }">
               </span>
-              {{ p.claimStatus }}
+              {{ p.claimStatus === 'UnderReview' ? 'Under Review' : p.claimStatus }}
             </span>
           </td>
 
@@ -82,17 +85,34 @@
             {{ p.internalStaffRemarks || '—' }}
           </td>
 
-          <!-- Action Control Array Block -->
+          <!-- Action Control Array Block with Role-Based Conditional Split -->
           <td class="text-end pe-4">
-            <div class="btn-group btn-group-sm">
-              <button class="btn btn-outline-primary" [disabled]="p.claimStatus !== 'Pending'" (click)="approve(p)">
-                Approve
+            @if (isAdminLoggedIn()) {
+              <!-- Admin Action Layout Array -->
+              <div class="btn-group btn-group-sm">
+                <button 
+                  class="btn btn-outline-success" 
+                  [disabled]="p.claimStatus === 'Approved' || p.claimStatus === 'Rejected'" 
+                  (click)="approve(p)">
+                  Approve
+                </button>
+                <button 
+                  class="btn btn-outline-danger" 
+                  [disabled]="p.claimStatus === 'Approved' || p.claimStatus === 'Rejected'" 
+                  (click)="reject(p)">
+                  Reject
+                </button>
+              </div>
+            } @else {
+              <!-- Standard Internal Staff Action Layout -->
+              <button 
+                class="btn btn-sm btn-outline-primary" 
+                type="button" 
+                [disabled]="p.claimStatus === 'UnderReview' || p.claimStatus === 'Approved' || p.claimStatus === 'Rejected' || !isInternalStaffLoggedIn()"
+                (click)="onTakeAction(p)">
+                Take Action
               </button>
-              
-              <button class="btn btn-outline-danger" [disabled]="p.claimStatus !== 'Pending'" (click)="reject(p)">
-                Reject
-              </button>
-            </div>
+            }
           </td>
         </tr>
         } @empty {
@@ -107,3 +127,70 @@
     </table>
   </div>
 </div>
+
+<!-- Reactive Bootstrap 5 Review Modal Overlay (Only used by Internal Staff) -->
+@if (isActionModalOpen() && selectedClaim()) {
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      
+      <!-- Modal Header -->
+      <div class="modal-header bg-light py-3">
+        <h6 class="modal-title fw-bold text-dark">
+          Review Claim: <span class="font-monospace text-primary">{{ selectedClaim()?.claimNumber }}</span>
+        </h6>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeActionModal()"></button>
+      </div>
+
+      <!-- Modal Form Content Body -->
+      <div class="modal-body p-4">
+        <form #reviewForm="ngForm" (ngSubmit)="submitStaffReview(reviewForm.value)">
+          
+          <!-- Read-only Context Metadata Segment -->
+          <div class="mb-3 bg-light p-3 rounded border">
+            <div class="row g-2 small">
+              <div class="col-6 text-muted">Policy: <strong class="text-dark font-monospace">{{ selectedClaim()?.policyNumber }}</strong></div>
+              <div class="col-6 text-muted text-end">Amount: <strong class="text-dark">{{ selectedClaim()?.claimAmount | currency:'INR':'symbol':'1.2-2' }}</strong></div>
+            </div>
+          </div>
+
+          <!-- Fixed Status Target Indicator Display (Replaced old interactive select menu) -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary text-uppercase mb-1">Target Action Status</label>
+            <div class="form-control form-control-sm bg-light text-dark fw-medium border-secondary-subtle">
+              <span class="p-1 rounded-circle bg-info me-2 d-inline-block" style="width: 8px; height: 8px;"></span>
+              Under Review
+            </div>
+          </div>
+
+          <!-- Remarks Textarea Context Box -->
+          <div class="mb-4">
+            <label for="staffRemarksText" class="form-label small fw-semibold text-secondary text-uppercase">Staff Review Remarks</label>
+            <textarea 
+              id="staffRemarksText"
+              class="form-control form-control-sm" 
+              rows="4" 
+              name="remarks" 
+              [ngModel]="selectedClaim()?.internalStaffRemarks" 
+              placeholder="Provide context, justifications, or dynamic verification details regarding this decision..."
+              required>
+            </textarea>
+          </div>
+
+          <!-- Action Interactive Control Tray -->
+          <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="button" class="btn btn-sm btn-light" (click)="closeActionModal()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-sm btn-primary" [disabled]="!reviewForm.valid">
+              Confirm Status Transition
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+}

@@ -20,15 +20,27 @@ namespace InsurancePolicyApi.Services
             _policyRepository = policyRepository;
         }
 
-        public async Task<ClaimResponse> RaiseClaimAsync(ClaimRequest claim)
+        public async Task<ClaimResponse> RaiseClaimAsync(ClaimRequest claim, int userId)
         {
             var policy = await _policyRepository.GetByIdAsync(claim.PolicyId);
+            var clm = await _claimRepository.GetByPolicyAsync(claim.PolicyId);
 
             if (policy == null)
                 throw new Exception("Policy not found.");
 
+            if (policy.Customer.UserId != userId)
+                throw new Exception("This Policy does not belongs to the current Customer");
+
             if (policy.PolicyStatus != PolicyStatus.Active)
-                throw new Exception("Claim can only be raised against an active policy.");
+                throw new Exception("Claim can only be Raised against an Active Policy.");
+
+            if (policy.StartDate < DateTime.Now.AddMonths(-1))
+                throw new Exception("Can not Raise Claim before one month of Policy Purchase.");
+
+            if (clm.Any(c => c.PolicyId == claim.PolicyId && (c.ClaimStatus == ClaimStatus.Submitted || c.ClaimStatus == ClaimStatus.UnderReview)))
+            {
+                throw new Exception("A claim for this policy is already submitted or under review.");
+            }
 
             Entities.Claim claimMod = new Entities.Claim()
             {
@@ -53,12 +65,13 @@ namespace InsurancePolicyApi.Services
             var claim = await _claimRepository.GetByIdAsync(claimId);
 
             if (claim == null)
-                return null;
+                throw new Exception("Claim does not Exist.");
+
             if (claim.ClaimStatus == ClaimStatus.Approved || claim.ClaimStatus == ClaimStatus.Rejected)
                 throw new Exception("Policy already claimed");
 
             claim.ClaimStatus = crr.RecommendedStatus;
-            claim.AdminRemarks = crr.Remarks;
+            claim.InternalStaffRemarks = crr.Remarks;
 
             var claimModRes = await _claimRepository.ReviewClaimAsync(claim);
             var claimRes = GetClaimResponse(claimModRes);
@@ -69,9 +82,16 @@ namespace InsurancePolicyApi.Services
         public async Task<ClaimResponse?> ApproveClaimAsync(int claimId)
         {
             var claim = await _claimRepository.GetByIdAsync(claimId);
+            var policy = await _policyRepository.GetByIdAsync(claim.PolicyId);
 
             if (claim == null)
-                return null;
+                throw new Exception("Claim not Found");
+
+            if(policy != null)
+            {
+                policy.PolicyStatus = PolicyStatus.Complete;
+                await _policyRepository.UpdateAsync(policy);
+            }
 
             claim.ClaimStatus = ClaimStatus.Approved;
 

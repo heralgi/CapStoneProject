@@ -1,53 +1,124 @@
-@if(!toggleTable()){
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Plan</th>
-            <th>coverageAmount</th>
-            <th>premiumAmount</th>
-            <th>durationYears</th>
-            <th>PremiumType</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let p of plans()">
-            @if(p.isActive){
-            <td>{{p.planName}}</td>
-            <td>{{p.coverageAmount}}</td>
-            <td>{{p.premiumAmount}}</td>
-            <td>{{p.durationYears}}</td>
-            <td>{{ premiumTypeLabels[p.premiumType] }}</td>
-            <td>
-                <button
-                    class="btn btn-primary btn-sm"
-                    (click)="purchaseForm(p.planId)">
-                    Purchase
-                </button>
-            </td>
-        }
-        </tr>
-    </tbody>
-</table>
-}
-@if(toggleTable()){
-    <form [formGroup]="purchaseform" (ngSubmit)="purchase()">
-        <h3>Purchase Form</h3>
-        <label>Identifier (Enter Aadhar or Vehicle Number)</label>
-        <div class="text-danger small">
-
-            @if(purchaseform.controls.identifier.errors?.['required']){
-            <div>required.</div>
-            }
-
-            @if(purchaseform.controls.identifier.errors?.['pattern']){
-            <div>Enter a valid Aadhar or Vehicle Number.</div>
-            }
-
+@if (!isTableHidden()) {
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 border-bottom">
+      <div class="row align-items-center g-2">
+        <div class="col-md-6">
+          <h5 class="mb-0 fw-bold text-dark h6">Available Insurance Plans</h5>
         </div>
-        <input class="form-control" formControlName="identifier">
+      </div>
+    </div>
 
-        <button class="btn btn-primary" type="submit">Buy</button>
-        <button class="btn btn-secondary" type="button" (click)="toggle()">Cancel</button>
-    </form>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-secondary small text-uppercase fw-semibold">
+          <tr>
+            <th class="ps-4" style="width: 70px;">#</th>
+            <th>Plan Specifications</th>
+            <th>Premium Breakdown</th>
+            <th>Duration</th>
+            <th>Classification</th>
+            <th class="text-end pe-4" style="width: 180px;">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (plan of activePlans(); track plan.planId; let index = $index) {
+            <tr>
+              <td class="text-muted small ps-4">{{ index + 1 }}</td>
+              
+              <td class="fw-semibold text-dark">
+                {{ plan.planName }}
+              </td>
+              
+              <td>
+                <div class="fw-bold text-dark">
+                  {{ plan.premiumAmount | currency:'INR':'symbol':'1.0-2' }}
+                </div>
+                <div class="text-muted small">
+                  Coverage: {{ plan.coverageAmount | currency:'INR':'symbol':'1.0-2' }}
+                </div>
+              </td>
+              
+              <td class="text-muted small">
+                {{ plan.durationYears }} {{ plan.durationYears === 1 ? 'Year' : 'Years' }}
+              </td>
+              
+              <td>
+                <span class="badge bg-light text-dark border">
+                  {{ premiumTypeLabels[plan.premiumType] }}
+                </span>
+              </td>
+              
+              <td class="text-end pe-4">
+                <button 
+                  type="button"
+                  class="btn btn-sm btn-outline-primary px-3" 
+                  (click)="onSelectPlan(plan.planId)"
+                  [attr.aria-label]="'Purchase ' + plan.planName">
+                  Purchase
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center py-5 text-muted">
+                No active insurance plans available for this product.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+
+@if (isTableHidden()) {
+  <div class="card shadow-sm border-0 max-width-md mx-auto my-4" style="max-width: 550px;">
+    <div class="card-header bg-white py-3 border-bottom">
+      <h5 class="mb-0 fw-bold text-dark h6">Purchase Insurance Plan</h5>
+    </div>
+    
+    <div class="card-body p-4">
+      <form [formGroup]="purchaseForm" (ngSubmit)="onPurchaseSubmit()" novalidate>
+        <div class="mb-4">
+          <label for="identifierInput" class="form-label fw-semibold text-dark small text-uppercase">
+            Identity Identifier <span class="text-danger" aria-hidden="true">*</span>
+          </label>
+          
+          <input 
+            id="identifierInput"
+            type="text"
+            class="form-control form-control-lg fs-6" 
+            formControlName="identifier"
+            [class.is-invalid]="identifierControl.invalid && identifierControl.touched"
+            placeholder="Enter 12-digit Aadhaar or Vehicle Number (e.g. DL1CA1234)"
+            aria-describedby="identifierFeedback">
+            
+          <div id="identifierFeedback" class="invalid-feedback small">
+            @if (identifierControl.errors?.['required']) {
+              <div>This verification field is required.</div>
+            }
+            @if (identifierControl.errors?.['pattern']) {
+              <div>Please enter a valid 12-digit Aadhaar card number or alphanumeric vehicle standard.</div>
+            }
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end pt-2">
+          <button 
+            type="button" 
+            class="btn btn-light border px-4 text-secondary" 
+            (click)="onCancelPurchase()">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary px-4"
+            [disabled]="purchaseForm.invalid">
+            Confirm Purchase
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 }

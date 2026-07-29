@@ -13,8 +13,8 @@ export class ClaimService {
   private apiUrl = 'https://localhost:7083/api/Claims';
 
   // GET api/claims
-  getClaims(): Observable<ClaimResponse> {
-    return this.http.get<any>(this.apiUrl);
+  getClaims(): Observable<ClaimResponse[]> {
+    return this.http.get<ClaimResponse[]>(this.apiUrl);
   }
 
   getAllClaims(): Observable<ClaimResponse[]> {
