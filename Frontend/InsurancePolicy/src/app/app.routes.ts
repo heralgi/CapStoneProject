@@ -20,6 +20,7 @@ import { PlanCustomer } from './Components/customer/plan-customer/plan-customer'
 import { PolicyCustomer } from './Components/customer/policy-customer/policy-customer';
 import { Payment } from './Components/payment/payment';
 import { ClaimCustomer } from './Components/customer/claim-customer/claim-customer';
+import { ListCustomer } from './Components/list-customer/list-customer';
 
 
 export const routes: Routes = [
@@ -47,6 +48,7 @@ export const routes: Routes = [
       { path: 'claim', component: Claim },
       { path: 'payment', component: Payment },
       { path: 'user', component: UserComponent },
+      { path: 'customers', component: ListCustomer },
     ],
     canActivate: [authGuard, roleGuard(['Admin'])]
   },
@@ -59,6 +61,7 @@ export const routes: Routes = [
       { path: 'policy', component: Policy },
       { path: 'claim', component: Claim },
       { path: 'payment', component: Payment },
+      { path: 'customers', component: ListCustomer },
     ],
     canActivate: [authGuard, roleGuard(['InternalStaff'])]
   },

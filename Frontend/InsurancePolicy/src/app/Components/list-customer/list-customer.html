@@ -1,0 +1,99 @@
+<div class="card shadow-sm border-0 mb-4">
+  <!-- Card Header with Responsive Grid Layout -->
+  <div class="card-header bg-white py-3 border-bottom">
+    <div class="row align-items-center g-2">
+      <div class="col-md-6">
+        <h5 class="mb-0 fw-bold text-dark h6">Customer Directory</h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- Responsive Structural Table Wrapper -->
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light text-secondary small text-uppercase fw-semibold">
+        <tr>
+          <!-- Fixed Width Serial Number Column -->
+          <th class="ps-4" style="width: 70px;">#</th>
+          <th>ID</th>
+          <th>Full Name</th>
+          <th>Contact Details</th>
+          <th>Date of Birth</th>
+          <th style="width: 20%">Primary Address</th>
+          <th class="d-none d-xl-table-cell">Region</th>
+          <th>Nominee Details</th>
+          <th class="text-end pe-4" style="width: 130px;">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- TrackBy optimized loop with implicit index extraction matching Customer IDs -->
+        @for (c of customers(); track c.customerId; let index = $index) {
+        <tr>
+          <!-- Serial Number Column (1-indexed) -->
+          <td class="text-muted small ps-4">
+            {{ index + 1 }}
+          </td>
+
+          <!-- Main Core Customer Identifier Block -->
+          <td class="fw-semibold text-dark font-monospace">
+            CUST-{{ c.customerId }}
+          </td>
+
+          <!-- Full Name Block with Strong Emphasis -->
+          <td class="fw-bold text-dark text-nowrap">
+            {{ c.fullName }}
+          </td>
+
+          <!-- Multi-line Contact Details Block -->
+          <td>
+            <div class="text-dark fw-medium small mb-0">{{ c.email }}</div>
+            <div class="text-secondary small font-monospace">{{ c.mobileNumber }}</div>
+          </td>
+
+          <!-- Time-based Birth Metrics Standardized -->
+          <td class="text-secondary text-nowrap">
+            {{ c.dateOfBirth | date:'mediumDate' }}
+          </td>
+
+          <!-- Localized Address String with Safe Truncation Boundaries -->
+          <td class="text-muted small text-truncate" style="max-width: 220px;" [title]="c.address">
+            {{ c.address }}
+          </td>
+
+          <!-- Responsive Region Column (Hidden on smaller screens, shown on Extra Large up) -->
+          <td class="text-secondary small d-none d-xl-table-cell text-nowrap">
+            {{ c.city }}, {{ c.state }} <span class="badge bg-light text-dark border ms-1">{{ c.pinCode }}</span>
+          </td>
+
+          <!-- Secondary Operational Context Node: Nominee Relationship Mapping -->
+          <td>
+            <div class="text-dark fw-semibold small mb-0">{{ c.nomineeName }}</div>
+            <span class="badge rounded-pill bg-light text-secondary border d-inline-flex align-items-center mt-1 small fw-normal">
+              <span class="p-1 rounded-circle bg-secondary me-1 d-inline-block" style="width: 5px; height: 5px;"></span>
+              {{ c.nomineeRelation }}
+            </span>
+          </td>
+
+          <!-- Action Control Array Block -->
+          <td class="text-end pe-4">
+            <button 
+              class="btn btn-sm btn-outline-primary" 
+              type="button" 
+              (click)="onViewCustomer(c)">
+              View Profile
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <!-- Empty State Row Mapping All 9 Column Layout Nodes -->
+        <tr>
+          <td colspan="9" class="text-center py-5 text-muted">
+            No customer profiles available in the system register.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
