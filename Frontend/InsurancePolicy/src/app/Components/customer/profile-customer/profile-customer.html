@@ -1,0 +1,295 @@
+@if (customer(); as data) {
+
+<div class="card shadow-sm border-0 mb-4">
+
+  <!-- Header -->
+  <div class="card-header bg-white py-3 border-bottom">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+      <div class="d-flex align-items-center gap-3">
+
+        <div class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center"
+          style="width:60px;height:60px;font-size:22px;">
+          {{ getInitials(data.fullName) }}
+        </div>
+
+        <div>
+          <h5 class="mb-1 fw-bold h6">{{ data.fullName }}</h5>
+          <div class="small text-muted">
+            Customer ID :
+            <span class="fw-semibold">#{{ data.customerId }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+
+        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+          Active Account
+        </span>
+
+        <!-- Upload Customer Photo -->
+        <label class="btn btn-sm btn-outline-secondary fw-semibold mb-0">
+          <i class="bi bi-camera me-1"></i>
+          Upload Photo
+
+          <input type="file" hidden accept="image/png,image/jpeg,image/jpg" (change)="onPhotoSelected($event)">
+        </label>
+
+        <button class="btn btn-sm btn-primary fw-semibold" (click)="openEditModal()">
+          Edit Profile
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="table-responsive">
+
+    <table class="table table-hover align-middle mb-0">
+
+      <tbody>
+
+        <tr class="table-light">
+          <th colspan="2" class="text-uppercase small text-secondary fw-bold">
+            Primary Information
+          </th>
+        </tr>
+
+        <tr>
+          <th style="width:250px;">Full Name</th>
+          <td>{{ data.fullName }}</td>
+        </tr>
+
+        <tr>
+          <th>Email Address</th>
+          <td>{{ data.email }}</td>
+        </tr>
+
+        <tr>
+          <th>Mobile Number</th>
+          <td>{{ data.mobileNumber }}</td>
+        </tr>
+
+        <tr>
+          <th>Date of Birth</th>
+          <td>{{ data.dateOfBirth | date:'longDate' }}</td>
+        </tr>
+
+        <tr class="table-light">
+          <th colspan="2" class="text-uppercase small text-secondary fw-bold">
+            Address Details
+          </th>
+        </tr>
+
+        <tr>
+          <th>Street Address</th>
+          <td>{{ data.address }}</td>
+        </tr>
+
+        <tr>
+          <th>City</th>
+          <td>{{ data.city }}</td>
+        </tr>
+
+        <tr>
+          <th>State</th>
+          <td>{{ data.state }}</td>
+        </tr>
+
+        <tr>
+          <th>Pin Code</th>
+          <td>{{ data.pinCode }}</td>
+        </tr>
+
+        <tr class="table-light">
+          <th colspan="2" class="text-uppercase small text-secondary fw-bold">
+            Nominee Details
+          </th>
+        </tr>
+
+        <tr>
+          <th>Nominee Name</th>
+          <td>{{ data.nomineeName }}</td>
+        </tr>
+
+        <tr>
+          <th>Relationship</th>
+          <td>{{ data.nomineeRelation }}</td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+} @else {
+
+<div class="card shadow-sm border-0">
+
+  <div class="card-header bg-white py-3">
+    <div class="placeholder-glow">
+      <span class="placeholder col-4"></span>
+    </div>
+  </div>
+
+  <div class="card-body">
+
+    <div class="placeholder-glow mb-3">
+      <span class="placeholder col-12"></span>
+    </div>
+
+    <div class="placeholder-glow mb-3">
+      <span class="placeholder col-10"></span>
+    </div>
+
+    <div class="placeholder-glow mb-3">
+      <span class="placeholder col-8"></span>
+    </div>
+
+    <div class="placeholder-glow">
+      <span class="placeholder col-9"></span>
+    </div>
+
+  </div>
+
+</div>
+
+}
+
+@if(showEditModal()){
+
+<div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,.5);">
+
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+
+    <div class="modal-content shadow border-0">
+
+      <div class="modal-header bg-light py-3">
+        <h5 class="modal-title fw-bold h6">
+          Edit Customer Profile
+        </h5>
+
+        <button class="btn-close" (click)="closeEditModal()">
+        </button>
+      </div>
+
+      <form [formGroup]="editForm" (ngSubmit)="save()">
+
+        <div class="modal-body p-4">
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Full Name
+              </label>
+
+              <input type="text" formControlName="fullName" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Email
+              </label>
+
+              <input type="email" formControlName="email" class="form-control" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Mobile
+              </label>
+
+              <input type="text" formControlName="mobileNumber" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Date of Birth
+              </label>
+
+              <input type="date" formControlName="dateOfBirth" class="form-control">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Address
+              </label>
+
+              <textarea rows="3" formControlName="address" class="form-control">
+                            </textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                City
+              </label>
+
+              <input type="text" formControlName="city" class="form-control">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                State
+              </label>
+
+              <input type="text" formControlName="state" class="form-control">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Pin Code
+              </label>
+
+              <input type="text" formControlName="pinCode" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Nominee Name
+              </label>
+
+              <input type="text" formControlName="nomineeName" class="form-control">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary text-uppercase">
+                Relationship
+              </label>
+
+              <input type="text" formControlName="nomineeRelation" class="form-control">
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer bg-light">
+
+          <button type="button" class="btn btn-link text-secondary text-decoration-none fw-semibold"
+            (click)="closeEditModal()">
+            Cancel
+          </button>
+
+          <button type="submit" class="btn btn-primary fw-semibold px-4">
+            Save Changes
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+}

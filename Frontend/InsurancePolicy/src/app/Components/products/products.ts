@@ -13,6 +13,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./products.css']
 })
 export class Products implements OnInit {
+openCreateModal() {
+throw new Error('Method not implemented.');
+}
 
   products = signal<ProductResponse[]>([]);
 

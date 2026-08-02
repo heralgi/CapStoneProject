@@ -22,7 +22,6 @@
           <th style="width: 20%">Primary Address</th>
           <th class="d-none d-xl-table-cell">Region</th>
           <th>Nominee Details</th>
-          <th class="text-end pe-4" style="width: 130px;">Actions</th>
         </tr>
       </thead>
 
@@ -73,16 +72,6 @@
               <span class="p-1 rounded-circle bg-secondary me-1 d-inline-block" style="width: 5px; height: 5px;"></span>
               {{ c.nomineeRelation }}
             </span>
-          </td>
-
-          <!-- Action Control Array Block -->
-          <td class="text-end pe-4">
-            <button 
-              class="btn btn-sm btn-outline-primary" 
-              type="button" 
-              (click)="onViewCustomer(c)">
-              View Profile
-            </button>
           </td>
         </tr>
         } @empty {

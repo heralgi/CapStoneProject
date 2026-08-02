@@ -3,6 +3,7 @@
 namespace InsurancePolicyApi.Controllers
 {
     using InsurancePolicyApi.DTOs.Common;
+    using InsurancePolicyApi.DTOs.Customer;
     using InsurancePolicyApi.Entities;
     using InsurancePolicyApi.Entities.Enums;
     using InsurancePolicyApi.Services;
@@ -14,6 +15,7 @@ namespace InsurancePolicyApi.Controllers
     public class CustomersController : ControllerBase
     {
         private readonly ICustomerService _customerService;
+        private readonly ICloudinaryService _cloudinaryservice;
 
         public CustomersController(ICustomerService customerService)
         {
@@ -35,6 +37,16 @@ namespace InsurancePolicyApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             var customers = await _customerService.GetAllAsync();
+
+            return Ok(customers);
+        }
+
+        [Authorize]
+        [HttpGet("getMyProfile")]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            int userId = int.Parse(User.FindFirst("userid")!.Value);
+            var customers = await _customerService.GetMyProfile(userId);
 
             return Ok(customers);
         }
@@ -81,7 +93,7 @@ namespace InsurancePolicyApi.Controllers
         [Authorize]
         // PUT: api/customers/5
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProfile(int id, Customer customer)
+        public async Task<IActionResult> UpdateProfile(int id, CustomerUpdateRequest customer)
         {
             var updated = await _customerService.UpdateProfileAsync(id, customer);
 
@@ -89,6 +101,21 @@ namespace InsurancePolicyApi.Controllers
                 return NotFound();
 
             return Ok(updated);
+        }
+
+        [Authorize]
+        [HttpPost("{customerId}/profile-image")]
+        public async Task<IActionResult> UploadProfileImage(int customerId, IFormFile file)
+        {
+            var url = await _customerService.UploadProfileImageAsync(customerId, file);
+
+            if (url == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                profileImageUrl = url
+            });
         }
     }
 }

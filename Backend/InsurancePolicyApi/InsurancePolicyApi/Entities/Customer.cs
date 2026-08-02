@@ -26,6 +26,8 @@ namespace InsurancePolicyApi.Entities
 
         public DateTime UpdatedDate { get; set; }
 
+        public string ImageUrl { get; set; }
+
         // Navigation
         public User User { get; set; } = null!;
 

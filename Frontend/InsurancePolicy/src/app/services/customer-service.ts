@@ -15,4 +15,18 @@ export class CustomerService {
   getAll(): Observable<CustomerResponse[]> {
     return this.http.get<CustomerResponse[]>(`${this.apiUrl}/getAll`);
   }
+
+  getMyProfile(): Observable<CustomerResponse> {
+    return this.http.get<CustomerResponse>(`${this.apiUrl}/getMyProfile`);
+  }
+
+  putCustomerProfile(customer: CustomerResponse, id: number): Observable<CustomerResponse> {
+    return this.http.put<CustomerResponse>(`${this.apiUrl}/${id}`, customer);
+  }
+
+  uploadProfileImage(file: File, customerId: number): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.apiUrl}/${customerId}/profile-image`, formData);
+  }
 }

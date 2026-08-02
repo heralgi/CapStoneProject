@@ -6,8 +6,16 @@
       <h1 class="h2 fw-bold text-dark mb-1">Product Management</h1>
       <p class="text-muted mb-0">Create, update, and manage core insurance enterprise products.</p>
     </div>
+    <!-- Deploy New Product Action Button -->
+    <button class="btn btn-primary d-inline-flex align-items-center gap-2 fw-semibold shadow-sm" 
+            data-bs-toggle="modal" 
+            data-bs-target="#productFormModal" 
+            (click)="openCreateModal()">
+      <span>Deploy New Product</span>
+    </button>
   </div>
 
+  <!-- Product Catalog Card -->
   <div class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white py-3 border-bottom">
       <div class="row align-items-center g-2">
@@ -21,55 +29,59 @@
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light text-secondary small text-uppercase fw-semibold">
           <tr>
-            <!-- Added S.No Header Column -->
             <th class="ps-4" style="width: 70px;">#</th>
-            <th>Product Specifications</th>
+            <th>Product Details</th>
             <th>Classification</th>
-            <th style="width:45%">Core Scope & Provisions</th>
+            <th>Operational Description</th>
             <th>Market Status</th>
-            <th class="text-end pe-4" style="width:180px;">Actions</th>
+            <th class="pe-4 text-center" style="width: 180px;">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          <!-- Added count as index to track item row positions -->
           @for (p of products(); track p.productId; let index = $index) {
           <tr>
-            <!-- Added S.No Value Column (1-indexed) -->
             <td class="text-muted small ps-4">{{ index + 1 }}</td>
 
-            <!-- Removed ps-4 style from product name since S.No is now the first column -->
-            <td class="fw-semibold text-dark">{{p.productName}}</td>
-
             <td>
-              <span class="badge bg-light text-dark border">
-                {{p.productType}}
-              </span>
-            </td>
-
-            <td class="text-muted small text-truncate" style="max-width:300px;">
-              {{p.description || 'No descriptive context provided.'}}
+              <div class="fw-semibold text-dark">{{ p.productName }}</div>
+              <div class="text-muted small text-uppercase tracking-wider">ID: {{ p.productId }}</div>
             </td>
 
             <td>
-              <span class="badge rounded-pill d-inline-flex align-items-center" [class.bg-success-subtle]="p.isActive"
-                [class.text-success]="p.isActive" [class.bg-danger-subtle]="!p.isActive"
+              <div class="fw-semibold text-dark">{{ p.productType }}</div>
+              <div class="text-muted small">Insurance Line</div>
+            </td>
+
+            <td>
+              <div class="text-muted small text-truncate" style="max-width: 350px;" [title]="p.description">
+                {{ p.description || 'No descriptive context provided.' }}
+              </div>
+            </td>
+
+            <td>
+              <span class="badge rounded-pill d-inline-flex align-items-center" 
+                [class.bg-success-subtle]="p.isActive"
+                [class.text-success]="p.isActive" 
+                [class.bg-danger-subtle]="!p.isActive"
                 [class.text-danger]="!p.isActive">
-
-                <span class="p-1 rounded-circle me-1 d-inline-block" [class.bg-success]="p.isActive"
+                <span class="p-1 rounded-circle me-1 d-inline-block" 
+                  [class.bg-success]="p.isActive"
                   [class.bg-danger]="!p.isActive">
                 </span>
-
-                {{p.isActive ? 'Active' : 'Inactive'}}
+                {{ p.isActive ? 'Active' : 'Inactive' }}
               </span>
             </td>
 
-            <td class="text-end pe-4">
+            <td class="pe-4 text-center">
               <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-primary" (click)="edit(p)">
+                <!-- Modify button triggers the same shared modal popup -->
+                <button class="btn btn-outline-primary" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#productFormModal" 
+                        (click)="edit(p)">
                   Modify
                 </button>
-
                 <button class="btn btn-outline-danger" [disabled]="!p.isActive" (click)="delete(p.productId)">
                   Deactivate
                 </button>
@@ -77,7 +89,6 @@
             </td>
           </tr>
           } @empty {
-          <!-- Increased colspan to 6 to account for the new column -->
           <tr>
             <td colspan="6" class="text-center py-5 text-muted">
               No products available.
@@ -89,76 +100,65 @@
     </div>
   </div>
 
-  
-  <div class="card shadow-sm border-0">
-    <div class="card-header bg-dark text-white py-3">
-      <h5 class="mb-0">
-        {{ isEditMode ? 'Modify Product Specifications' : 'Register New Insurance Product' }}
-      </h5>
-    </div>
+</div>
 
-    <div class="card-body p-4">
-
-      <!-- Contextual Form Card (Rendered on top for better user focus) -->
-      <div class="card shadow-sm mb-4 border-0">
-        <div class="card-header bg-dark text-white py-3">
-          <h5 class="card-title h6 mb-0 fw-semibold">
-            {{ isEditMode ? 'Modify Product Specifications' : 'Register New Insurance Product' }}
-          </h5>
-        </div>
-
-        <div class="card-body p-4">
-          <!-- Fixed: Dynamically toggling submission pipelines based on state -->
-          <form [formGroup]="form" (ngSubmit)="isEditMode ? update() : create()" novalidate>
-            <div class="row g-3 mb-3">
-              <div class="col-lg-6">
-                <label for="productName" class="form-label fw-semibold small text-secondary">Product Name</label>
-                <input id="productName" type="text" class="form-control" placeholder="e.g., Comprehensive Health Guard"
-                  formControlName="productName">
-              </div>
-
-              <div class="col-lg-6">
-                <label for="productType" class="form-label fw-semibold small text-secondary">Product Line
-                  Segment</label>
-                <select id="productType" class="form-select" formControlName="productType">
-                  <option [ngValue]="null" disabled>-- Select Segment Line --</option>
-                  <option [ngValue]="0">Health</option>
-                  <option [ngValue]="1">Motor</option>
-                  <option [ngValue]="2">Life</option>
-                  <option [ngValue]="3">Travel</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label for="description" class="form-label fw-semibold small text-secondary">Operational
-                Description</label>
-              <textarea id="description" rows="3" class="form-control"
-                placeholder="Define scope, baseline coverages, target demographics, and organizational parameters..."
-                formControlName="description">
-                    </textarea>
-            </div>
-
-            <div class="form-check form-switch mb-4">
-              <input id="isActive" class="form-check-input" type="checkbox" role="switch" formControlName="isActive">
-              <label class="form-check-label fw-semibold small text-dark" for="isActive">
-                Set Product Status to Active
-              </label>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2 border-top pt-3">
-              <button type="button" class="btn btn-light border px-4" (click)="resetForm()">
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-success px-4" [disabled]="form.invalid">
-                {{ isEditMode ? 'Save Changes' : 'Deploy Product' }}
-              </button>
-            </div>
-          </form>
-        </div>
+<!-- Bootstrap 5 Popup Modal Context -->
+<div class="modal fade" id="productFormModal" tabindex="-1" aria-labelledby="productFormModalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      
+      <div class="modal-header bg-dark text-white py-3">
+        <h5 class="modal-title h6 mb-0 fw-semibold" id="productFormModalLabel">
+          {{ isEditMode ? 'Modify Product Specifications' : 'Register New Insurance Product' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" (click)="resetForm()"></button>
       </div>
+
+      <form [formGroup]="form" (ngSubmit)="isEditMode ? update() : create()" novalidate>
+        <div class="modal-body p-4">
+          
+          <div class="row g-3 mb-3">
+            <div class="col-lg-6">
+              <label for="productName" class="form-label fw-semibold small text-secondary">Product Name</label>
+              <input id="productName" type="text" class="form-control" placeholder="e.g., Comprehensive Health Guard" formControlName="productName">
+            </div>
+
+            <div class="col-lg-6">
+              <label for="productType" class="form-label fw-semibold small text-secondary">Product Line Segment</label>
+              <select id="productType" class="form-select" formControlName="productType">
+                <option [ngValue]="null" disabled>-- Select Segment Line --</option>
+                <option [ngValue]="0">Health</option>
+                <option [ngValue]="1">Motor</option>
+                <option [ngValue]="2">Life</option>
+                <option [ngValue]="3">Travel</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label fw-semibold small text-secondary">Operational Description</label>
+            <textarea id="description" rows="3" class="form-control" placeholder="Define scope, baseline coverages, target demographics, and organizational parameters..." formControlName="description"></textarea>
+          </div>
+
+          <div class="form-check form-switch mb-2">
+            <input id="isActive" class="form-check-input" type="checkbox" role="switch" formControlName="isActive">
+            <label class="form-check-label fw-semibold small text-dark" for="isActive">
+              Set Product Status to Active
+            </label>
+          </div>
+
+        </div>
+        
+        <div class="modal-footer justify-content-end gap-2 bg-light border-top p-3">
+          <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal" (click)="resetForm()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-success px-4" [disabled]="form.invalid" data-bs-dismiss="modal">
+            {{ isEditMode ? 'Save Changes' : 'Deploy Product' }}
+          </button>
+        </div>
+      </form>
 
     </div>
   </div>
-
 </div>

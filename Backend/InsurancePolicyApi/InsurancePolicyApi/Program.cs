@@ -17,6 +17,11 @@ namespace InsurancePolicyApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.Configure<CloudinarySettings>(
+                builder.Configuration.GetSection("Cloudinary"));
+            builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
             // Add CORS
             builder.Services.AddCors(options =>
             {
