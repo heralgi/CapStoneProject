@@ -15,6 +15,9 @@ import { AuthService } from '../../services/auth';
   styleUrl: './plan.css',
 })
 export class Plan implements OnInit {
+openCreateModal() {
+throw new Error('Method not implemented.');
+}
   plans = signal<PlanResponse[]>([]);
   Products = signal<ProductResponse[]>([]);
   auth = inject(AuthService);

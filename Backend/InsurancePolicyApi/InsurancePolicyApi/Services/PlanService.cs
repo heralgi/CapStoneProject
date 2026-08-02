@@ -91,7 +91,7 @@ namespace InsurancePolicyApi.Services
             return responseDto;
         }
 
-        public async Task<PolicyPlan?> UpdateAsync(int id, PlanRequest plan)
+        public async Task<PlanResponse?> UpdateAsync(int id, PlanRequest plan)
         {
             var existing = await _planRepository.GetByIdAsync(id);
 
@@ -108,8 +108,23 @@ namespace InsurancePolicyApi.Services
             existing.TermsAndConditions = plan.TermsAndConditions;
             existing.DurationYears = plan.DurationYears;
             existing.UpdatedDate = DateTime.UtcNow;
+            existing.IsActive = plan.IsActive;
 
-            return await _planRepository.UpdateAsync(existing);
+            var planRes = await _planRepository.UpdateAsync(existing);
+
+            PlanResponse responseDto = new PlanResponse()
+            {
+                PlanId = planRes.Id,
+                PlanName = planRes.PlanName,
+                ProductId = planRes.InsuranceProductId,
+                CoverageAmount = planRes.CoverageAmount,
+                PremiumAmount = planRes.PremiumAmount,
+                PremiumType = planRes.PremiumType,
+                DurationYears = planRes.DurationYears,
+                TermsAndConditions = planRes.TermsAndConditions,
+                IsActive = planRes.IsActive
+            };
+            return responseDto;
         }
 
         public async Task<bool> DeactivateAsync(int id)

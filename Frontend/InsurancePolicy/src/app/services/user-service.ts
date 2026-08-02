@@ -22,4 +22,12 @@ export class UserService {
   putUser(Id: number, user: UpdateUserRequest): Observable<UserResponse>{
     return this.http.put<UserResponse>(`${this.apiUrl}/${Id}`, user);
   }
+
+  activateUser(Id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/activate/${Id}`, null);
+  }
+
+  deactivateUser(Id: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/deactivate/${Id}`, null);
+  }
 }

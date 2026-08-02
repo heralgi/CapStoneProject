@@ -4,7 +4,6 @@ import { UserService } from '../../services/user-service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { disabled } from '@angular/forms/signals';
-import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-user-component',
@@ -86,29 +85,20 @@ export class UserComponent implements OnInit{
     
   }
 
-  edit(user: UserResponse): void {
+  edit(user: UserResponse): void{
+    this.isEditMode.set(true);
+    this.userForm.controls.email.disable();
+    this.userForm.controls.email.setValue('');
+    this.userForm.controls.password.disable();
+    this.userForm.controls.password.setValue('');
 
-  this.isEditMode.set(true);
+    this.userForm.controls.fullName.patchValue(user.fullName);
+    this.userForm.controls.mobileNumber.patchValue(user.mobileNumber);
+    this.userForm.controls.role.patchValue(UserRole[user.role as keyof typeof UserRole]);
+    console.log(this.userForm.value , user);
 
-  this.userForm.controls.email.disable();
-  this.userForm.controls.password.disable();
-
-  this.userForm.patchValue({
-    fullName: user.fullName,
-    email: user.email,
-    mobileNumber: user.mobileNumber,
-    role: UserRole[user.role as keyof typeof UserRole]
-  });
-
-  this.currentUserId = user.userId;
-
-  const modalElement = document.getElementById('userFormModal');
-
-  if (modalElement) {
-    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-    modal.show();
+    this.currentUserId = user.userId;
   }
-}
 
   deactivate(userId: Number): void{
     this.service.deactivateUser(userId as number).subscribe({
